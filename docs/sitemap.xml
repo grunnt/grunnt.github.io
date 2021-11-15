@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>https://www.coder-bas.nl/</loc>
+        <loc>https://www.basvs.dev/</loc>
     </url>
     <url>
-        <loc>https://www.coder-bas.nl/about/</loc>
+        <loc>https://www.basvs.dev/about/</loc>
     </url>
     <url>
-        <loc>https://www.coder-bas.nl/blog/</loc>
+        <loc>https://www.basvs.dev/blog/</loc>
     </url>
     <url>
-        <loc>https://www.coder-bas.nl/blog/falling-rust/</loc>
+        <loc>https://www.basvs.dev/blog/falling-rust/</loc>
         <lastmod>2021-10-31</lastmod>
     </url>
 </urlset>
