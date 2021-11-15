@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>BasVs.dev</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+
+<body>
+    <div id="center-column">
+        <header>
+            <div id="logo">BasVs.dev</div>
+            <nav>
+                <ul>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">Code (GitHub)</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section>
+            <div>
+                
+<h1 class="title">
+    Falling Rust
+</h1>
+<p class="subtitle"><strong>2021-10-31</strong></p>
+<p>Falling-sand game written in Rust, Bevy and egui.</p>
+<p><img src="/falling-rust/screenshot.png" alt="Screenshot" /></p>
+<p>Simulating simplified physics. The code is on <a href="https://github.com/grunnt/falling-rust">GitHub</a>.</p>
+<h2 id="features">Features</h2>
+<ul>
+<li>Simulation of many different elements: sand, rock, wood, water, acid, oil, lava, fire, ash, smoke</li>
+<li>Editor with several tools: place circle, square or spray</li>
+<li>512 x 512 cells sandbox to play around with</li>
+<li>Place a source for any element</li>
+<li>Liquid drains</li>
+<li>Pause and step the simulation</li>
+<li>Clear the level</li>
+</ul>
+<h2 id="what-did-i-use-to-make-this">What did I use to make this?</h2>
+<p><a href="https://www.rust-lang.org/">Rust</a> is a safe low-level programming language with nice zero-cost abstractions. It has a steep learning curve, but helps you along. <a href="https://bevyengine.org/">Bevy</a> is an open-source data driven game-engine written in Rust. It is built around an entity component system (ECS). <a href="https://github.com/emilk/egui">egui</a> is a simple immediate-mode GUI library for rust. Very easy integration into bevy using <a href="https://github.com/mvlabat/bevy_egui">bevy-egui plugin</a>.</p>
+<h2 id="how-does-it-work">How does it work?</h2>
+<p>A Falling sand simulator </p>
+<p>Another great falling sand simulator made in rust is <a href="https://sandspiel.club">Sandspiel</a>. If you're interested in this kind of thing you should check it out, along with the accompaning <a href="https://maxbittker.com/making-sandspiel">&quot;Making sandspiel&quot; article</a>.
+Cellular automata.</p>
+<p>Sand falls down and slides diagonally.</p>
+<p><img src="/falling-rust/falling-sand.gif" alt="Falling sand" /></p>
+<p>Water falls down, diagonally but also sideways. Problem: piles of water.</p>
+<p><img src="/falling-rust/falling-water.gif" alt="Falling water" /></p>
+<p>Fire moves in all directions with a tendency upwards. It turns burnable elements into fire. Burns out over time.</p>
+<p><img src="/falling-rust/burning-fire.gif" alt="Burning fire" /></p>
+
+
+            </div>
+        </section>
+        <footer>
+            Made using <a href="https://www.getzola.org" target="_blank">Zola</a>. © 2021 Bas van Schoonhoven
+        </footer>
+    </div>
+</body>
+
+</html>
