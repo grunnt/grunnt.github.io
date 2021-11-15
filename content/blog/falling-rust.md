@@ -25,7 +25,7 @@ Simulating simplified physics. The code is on [GitHub](https://github.com/grunnt
 ## How does it work?
 A Falling sand simulator 
 
-Another great falling sand simulator made in rust is [Sandspiel](https://sandspiel.club). If you're interested in this kind of thing you should check it out, along with the accompaning ["Making sandspiel" article](https://maxbittker.com/making-sandspiel).
+Another great falling sand simulator made in rust is [Sandspiel](https://sandspiel.club). If you're interested in this kind of thing you should check it out, along with the accompanying ["Making sandspiel" article](https://maxbittker.com/making-sandspiel).
 Cellular automata.
 
 Sand falls down and slides diagonally.
