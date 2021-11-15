@@ -1,0 +1,75 @@
+$column-width: 1024px;
+$header-height: 46px;
+$footer-height: 40px;
+
+$background-color: #DDD;
+$foreground-color: #FFF;
+
+html, body {
+    background-color:$background-color;
+    height: 100%;
+    font-family: 'Courier New', monospace;
+    line-height: 1.6em;
+    margin: 0px;
+    padding: 0px;
+}
+
+header {
+    position: fixed;
+    top: 0px;
+    width: $column-width;
+    height: $header-height;
+    background: $background-color;
+}
+
+#logo {
+    padding: 10px;
+    vertical-align: top;    
+    display: inline-block;
+}
+
+nav {
+    display: inline-block;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0px;
+}
+
+nav li {
+    padding: 10px;
+    float: left;
+}
+
+#center-column {
+    width: $column-width;
+    margin: 0 auto;
+    position: relative;
+    height: 100%;
+    padding-top: $header-height;
+    padding-bottom: $footer-height;
+}
+
+section {
+    padding: 30px;
+    background-color: #FFFFFF;
+}
+
+section ul {
+    padding-left: 10px;
+}
+
+section li {
+    margin-left: 16px;
+}
+
+footer {
+    position: fixed;
+    bottom: 0px;
+    width: $column-width;
+    height: $footer-height;
+    line-height: $footer-height;
+    background: $background-color;
+    text-align: center;
+}

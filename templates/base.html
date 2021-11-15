@@ -3,26 +3,31 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Coder Bas</title>
+    <title>BasVs.dev</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
 </head>
 
 <body>
-    <header>
-        <div>Coder Bas</div>
-        <nav>
-            <ul>
-                <li><a href="/blog">Blog</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">Code</a></li>
-            </ul>
-        </nav>
-    </header>
-    <section class="section">
-        <div class="container">
-            {% block content %} {% endblock %}
-        </div>
-    </section>
-    <footer>© 2021 Bas van Schoonhoven</footer>
+    <div id="center-column">
+        <header>
+            <div id="logo">BasVs.dev</div>
+            <nav>
+                <ul>
+                    <li><a href="/blog">Blog</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">Code (GitHub)</a></li>
+                </ul>
+            </nav>
+        </header>
+        <section>
+            <div>
+                {% block content %} {% endblock %}
+            </div>
+        </section>
+        <footer>
+            Made using <a href="https://www.getzola.org" target="_blank">Zola</a>. © 2021 Bas van Schoonhoven
+        </footer>
+    </div>
 </body>
 
 </html>
