@@ -1,29 +1,101 @@
+// Globals
+$baseline: 1.5rem;
 $column-width: 1024px;
-$header-height: 46px;
-$footer-height: 40px;
+$header-height: 2.5em;
+$footer-height: 2.5em;
 
-$background-color: #DDD;
+$header-color: #FFF;
+$text-color: #222;
+$light-text-color: rgb(73, 73, 70);
+$color-three: #668449;
+$background-color: #F0EEEA;
 $foreground-color: #FFF;
 
-html, body {
+// CSS reset
+* {
+    margin: 0;
+    padding: 0;
+    font-size: 1em;
+    font-family: inherit;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    background-repeat: no-repeat;
+    color: $text-color;
+}
+
+html {
+    font-size: calc(1.2rem + 0.15vw);
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+}
+
+* + * {
+  margin-top: $baseline;
+}
+
+br, audio, br, nav, nav ul ,nav li {
+  margin-top: 0;
+}
+
+// Typography
+@font-face {
+  font-family: Roboto;
+  src: url(Roboto-Regular.ttf);
+}
+
+a {
+  color: $color-three;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+  text-decoration-color: $text-color;
+  transition: all 0.2s ease-in-out;
+  text-decoration: none;
+}
+
+a:hover {
+  color: $light-text-color;
+  opacity: 1;
+  text-decoration-color: inherit;
+}
+
+
+// Layout
+
+body {
+	line-height: $baseline;
+}
+
+html {
     background-color:$background-color;
-    height: 100%;
-    font-family: 'Courier New', monospace;
-    line-height: 1.6em;
-    margin: 0px;
-    padding: 0px;
+    font-family: Roboto, Arial, Helvetica, sans-serif;
+    line-height: 1.5em;
+}
+
+h1 {
+    font-size: 2em;
+}
+
+h2 {
+    font-size: 1.5em;
 }
 
 header {
     position: fixed;
     top: 0px;
-    width: $column-width;
-    height: $header-height;
-    background: $background-color;
+    width: 100%;
+    height: 2.5em;
+    line-height: 2.5em;
+    background: #fff;
+    z-index: 1;
 }
 
 #logo {
-    padding: 10px;
+    padding-left: 1em;
     vertical-align: top;    
     display: inline-block;
 }
@@ -35,10 +107,11 @@ nav {
 nav ul {
     list-style-type: none;
     margin: 0px;
+    padding: 0px;
 }
 
 nav li {
-    padding: 10px;
+    padding-left: 1em;
     float: left;
 }
 
@@ -52,8 +125,8 @@ nav li {
 }
 
 section {
-    padding: 30px;
-    background-color: #FFFFFF;
+    padding: 10px 30px 20px 30px;
+    text-align: justify;
 }
 
 section ul {
@@ -65,11 +138,13 @@ section li {
 }
 
 footer {
-    position: fixed;
-    bottom: 0px;
-    width: $column-width;
-    height: $footer-height;
-    line-height: $footer-height;
-    background: $background-color;
+    width: 100%;
+    height: 2.5em;
+    line-height: 2.5em;
+    background: #CDDF8B;
     text-align: center;
+}
+
+.blog-list {
+    padding-left: 0px;
 }

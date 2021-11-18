@@ -4,12 +4,13 @@
 <h1 class="title">
     {{ section.title }}
 </h1>
-<ul>
+<ul class="blog-list">
     {% for page in section.pages %}
-    <h1><a href="{{ page.permalink | safe }}">{{ page.title }}</a></h1>
+    <h2>{{ page.title }}</h2>
     {% if page.description %}
     <p>{{ page.description }}</p>
     {% endif %}
+    <a href="{{ page.permalink | safe }}">Read more</a>
     {% endfor %}
 </ul>
 
