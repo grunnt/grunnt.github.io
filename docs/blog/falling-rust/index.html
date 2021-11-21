@@ -44,18 +44,29 @@
 <p>The sandbox is programmed in the <a href="https://www.rust-lang.org/">Rust</a> language. Rust is a safe low-level programming language with nice zero-cost abstractions. It has a steep learning curve, but there's plenty of help available.</p>
 <p><a href="https://bevyengine.org/">Bevy</a> is an experimental open-source data driven game-engine written in Rust. It is built around an entity component system (ECS). <a href="https://github.com/emilk/egui">egui</a> is a simple immediate-mode GUI library for rust, which is very easy to integrate into bevy using the <a href="https://github.com/mvlabat/bevy_egui">bevy-egui plugin</a>.</p>
 <h2 id="how-does-it-work">How does it work?</h2>
-<p>A falling-sand works like a <a href="https://en.wikipedia.org/wiki/Cellular_automaton">cellular automaton</a>. The world is divided into cells in a grid. For each cell we define a set of simple rules, based on what's in the neighbouring cells. For example:</p>
-<p><img src="/falling-rust/falling-sand-grid.svg" alt="Sand falls down" /></p>
-<p>A falling sand simulator </p>
-<p>Another great falling sand simulator made in rust is <a href="https://sandspiel.club">Sandspiel</a>. If you're interested in this kind of thing you should check it out, along with the accompanying <a href="https://maxbittker.com/making-sandspiel">&quot;Making sandspiel&quot; article</a>.
-Cellular automata.</p>
-<p>Sand falls down and slides diagonally.</p>
+<p>A falling-sand works like a <a href="https://en.wikipedia.org/wiki/Cellular_automaton">cellular automaton</a>. The world is divided into cells in a grid. For each cell we define a set of simple rules, based on what's in the neighbouring cells. I'll explain this using a few example &quot;elements&quot; that occupy the cells in a falling-sand game.</p>
+<h3 id="sand">Sand</h3>
+<p>If there is air below sand the sand will fall down. If the cell below the sand is occupied, it can also slide diagonally downwards, if one of these cells contains air:</p>
+<img src="/falling-rust/falling-sand-grid.svg" alt="Sand falls down" width="256"/>
+<img src="/falling-rust/falling-sand-diagonal.svg" alt="Sand slides diagonally" width="256"/>
+<p>These two simple rules result in a nice sand-like behaviour:</p>
 <img src="/falling-rust/falling-sand.gif" alt="Falling sand" width="256"/>
-<p>Water falls down, diagonally but also sideways. Problem: piles of water.</p>
+<h3 id="water">Water</h3>
+<p>A little more complicated is water. This not only falls down and slides diagonally, but it flows horizontally as well. In other words: if one of the horizontally neighbouring cells contains air, move the water there:</p>
+<img src="/falling-rust/water-sideways.svg" alt="Water flows sideways" width="256"/>
+<p>This ensures that (eventually) the water will gain an equal level:</p>
 <img src="/falling-rust/falling-water.gif" alt="Falling water" width="256"/>
-<p>Fire moves in all directions with a tendency upwards. It turns burnable elements into fire. Burns out over time.</p>
+<p>TODO: discuss piles of water, tricks to speed up horizontal flow</p>
+<h3 id="fire">Fire</h3>
+<p>Elements in a falling sand game can also interact with each other. One example is fire, which is relatively complex. Fire moves in all directions with a tendency upwards (this is done using a random number generator). Other elements that are burnable (like wood or oil) are turned into fire as well if they are fire's neighbours. Fire burns out over time. Some elements, like wood, turn to ash when they burn. And finally, fire generates some smoke.</p>
+<img src="/falling-rust/fire-everywhere.svg" alt="Fire moves in all directions" width="256"/>
+<p>This set of rules results in nice pseudo-realistic fire:</p>
 <img src="/falling-rust/burning-fire.gif" alt="Burning fire" width="256"/>
-<p>The code is on <a href="https://github.com/grunnt/falling-rust">GitHub</a>.</p>
+<p>TODO: discuss strength and variant attributes for cells (needed for e.g. fire and visually interesting rendering).</p>
+<h2 id="the-code">The code</h2>
+<p>The code is open source and available on <a href="https://github.com/grunnt/falling-rust">GitHub</a>.</p>
+<h2 id="other-implementations">Other implementations</h2>
+<p>Another great falling sand simulator made in rust is <a href="https://sandspiel.club">Sandspiel</a>. This one also runs in the web and has some nice sharing features. If you're interested in this kind of thing you should check it out, along with the accompanying <a href="https://maxbittker.com/making-sandspiel">&quot;Making sandspiel&quot; article</a>.</p>
 
 
             </div>
