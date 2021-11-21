@@ -8,6 +8,10 @@ Falling Rust is a falling-sand toy written by me using Rust, Bevy and egui. It's
 
 ![Screenshot](/falling-rust/screenshot.png)
 
+## How to run
+
+You can download a Windows executable [here](https://github.com/grunnt/falling-rust/releases).
+
 ## Features
 - Simulation of many different elements: sand, rock, wood, water, acid, oil, lava, fire, ash, smoke
 - Editor with several tools: place circle, square or spray
@@ -36,14 +40,14 @@ Cellular automata.
 
 Sand falls down and slides diagonally.
 
-![Falling sand](/falling-rust/falling-sand.gif)
+<img src="/falling-rust/falling-sand.gif" alt="Falling sand" width="256"/>
 
 Water falls down, diagonally but also sideways. Problem: piles of water.
 
-![Falling water](/falling-rust/falling-water.gif)
+<img src="/falling-rust/falling-water.gif" alt="Falling water" width="256"/>
 
 Fire moves in all directions with a tendency upwards. It turns burnable elements into fire. Burns out over time.
 
-![Burning fire](/falling-rust/burning-fire.gif)
-
+<img src="/falling-rust/burning-fire.gif" alt="Burning fire" width="256"/>
+ 
 The code is on [GitHub](https://github.com/grunnt/falling-rust).

@@ -116,7 +116,7 @@ nav li {
 }
 
 #center-column {
-    width: $column-width;
+    max-width: $column-width;
     margin: 0 auto;
     position: relative;
     height: 100%;
