@@ -38,7 +38,7 @@ html {
   margin-top: $baseline;
 }
 
-br, audio, br, nav, nav ul ,nav li {
+br, audio, br, nav, nav ul , li {
   margin-top: 0;
 }
 
@@ -147,4 +147,9 @@ footer {
 
 .blog-list {
     padding-left: 0px;
+}
+
+.blog-summary {
+    display: inline-block;
+    padding-left: 1.5em;
 }

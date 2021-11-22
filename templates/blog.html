@@ -6,11 +6,18 @@
 </h1>
 <ul class="blog-list">
     {% for page in section.pages %}
-    <h2>{{ page.title }}</h2>
-    {% if page.description %}
-    <p>{{ page.description }}</p>
-    {% endif %}
-    <a href="{{ page.permalink | safe }}">Read more</a>
+    <div>
+        {% if page.extra.blog_icon %}
+        <img src="{{ page.extra.blog_icon }}" alt="Blog post icon" width="128" />
+        {% endif %}
+        <div class="blog-summary">
+            <h2>{{ page.title }}</h2>
+            {% if page.description %}
+            <p>{{ page.description }}</p>
+            {% endif %}
+            <a href="{{ page.permalink | safe }}">Read more</a>
+        </div>
+    </div>
     {% endfor %}
 </ul>
 
