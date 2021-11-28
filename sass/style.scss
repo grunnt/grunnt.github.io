@@ -1,11 +1,12 @@
 // Globals
 $baseline: 1.5rem;
 $column-width: 1024px;
-$header-height: 2.5em;
+$header-height: 3em;
 $footer-height: 2.5em;
 
 $header-color: #FFF;
-$text-color: #222;
+$text-color: #3c3c3c;
+$h-color: #282828;
 $light-text-color: rgb(73, 73, 70);
 $color-three: #668449;
 $background-color: #F0EEEA;
@@ -78,10 +79,12 @@ html {
 
 h1 {
     font-size: 2em;
+    color: $h-color;
 }
 
 h2 {
     font-size: 1.5em;
+    color: $h-color;
 }
 
 header {
@@ -95,7 +98,7 @@ header {
 }
 
 #logo {
-    padding-left: 1em;
+    padding-left: calc(#{$header-height} / 2);
     vertical-align: top;    
     display: inline-block;
 }
@@ -152,4 +155,6 @@ footer {
 .blog-summary {
     display: inline-block;
     padding-left: 1.5em;
+    vertical-align: top;
+    margin-top: 0;
 }
