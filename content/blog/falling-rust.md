@@ -66,6 +66,10 @@ This set of rules results in nice pseudo-realistic fire:
 
 <img src="/falling-rust/burning-fire.gif" alt="Burning fire" width="256"/>
 
+## Other implementations
+
+The most complete version of a falling sand game that I found is [The Powder Toy](https://powdertoy.co.uk). It simulates a truckload of elements and also takes into account pressure, velocity, heat and much more. There's a sharing feature with lots of interesting creations to discover.
+
 ## The code
 
 The code is open source and available on [GitHub](https://github.com/grunnt/falling-rust).
