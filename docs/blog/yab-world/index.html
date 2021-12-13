@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Bas Blog About Code</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+
+<body>
+    <header>
+        <div id="logo">Bas</div>
+        <nav>
+            <ul>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/">About</a></li>
+                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">Code (GitHub)</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="center-column">
+        <section>
+            <div>
+                
+<h1 class="title">
+    YAB-World
+</h1>
+<p class="subtitle"><strong>2021-12-10</strong></p>
+<p>The past years I worked on and off on Yet Another Block-World, for fun and to learn more about Rust and OpenGL. Like many developers I saw <a href="https://www.minecraft.net">Minecraft</a> and wanted to experiment with a block world of my own. </p>
+<p>Although the groundwork laid in YAB-world is quite solid, its features are still pretty much proof of concept and you can't do much more than dig and build with a limited set of blocks. I started working on this before any rust game engines were mature enough to use, so I built everything pretty much from the ground up.</p>
+<p>Getting a few blocks rendered on screen is relatively easy. However, creating an infinite fully multi-user real-time generated smoothy performing block world makes things a whole lot more complex.</p>
+<p><img src="/yab-world/screenshot.png" alt="Screenshot" /></p>
+<h2 id="current-features">Current features:</h2>
+<ul>
+<li>An infinite editable block-world
+<ul>
+<li>Generated in real-time using 3D noise</li>
+<li>Server / client multiplayer</li>
+<li>Generate rough hills (a la original Minecraft), a water world or a flat world</li>
+<li>Automatic world saving</li>
+<li>Placing and removing light-emitting blocks</li>
+<li>View-direction-based prioritization of world generation</li>
+</ul>
+</li>
+<li>Efficient rendering using OpenGL
+<ul>
+<li>Easily add block textures, can be different on each side</li>
+<li>Transparent water</li>
+<li>Screen Space Ambient Occlusion</li>
+<li>Day/night cycle with sky dome, sun and dusk &amp; dawn effects and block shading</li>
+<li>Some particle effects</li>
+<li>Sunlight propagation</li>
+</ul>
+</li>
+<li>Interaction
+<ul>
+<li>Arcade style collision detection and player movement</li>
+<li>Simple resource gathering and building</li>
+<li>Built-in profiler for debugging performance issues</li>
+<li>A basic GUI inspired by <a href="https://docs.rs/druid/latest/druid">druid</a> with a main menu, settings screen etc.</li>
+</ul>
+</li>
+</ul>
+<h1 id="how-to-run">How to run</h1>
+<p>Download a pre-built version for Windows <a href="https://github.com/grunnt/yab-world/releases">here</a>. Download the ZIP file, unpack it somewhere and run <em>yab-world.exe</em>.</p>
+<h1 id="development">Development</h1>
+<p>The code is open source and available on <a href="https://github.com/grunnt/yab-world">GitHub</a> (MIT License). It now is a whopping 80k lines of code (which are partially generated, e.g. the OpenGL bindings).</p>
+<p>It is written in <a href="https://www.rust-lang.org">Rust</a>. I make extensive use of threading to speed things up and make the client run smoothly, and Rust has been a great help in that. Fearless concurrency indeed!</p>
+<h2 id="2018-the-z-fight">2018 - The Z fight</h2>
+<p>Followed <a href="https://nercury.github.io/rust/opengl/tutorial/2018/02/08/opengl-in-rust-from-scratch-00-setup.html">Rust and OpenGL from scratch tutorial</a>.</p>
+<p><img src="/yab-world/screenshot-2018.png" alt="Screenshot 2018" /></p>
+<ul>
+<li>First screenshot</li>
+<li>Called it &quot;Octagia&quot; as working title. Initially some ideas about a sloped blocks revolution (octagon, hint), didnt turn out to be that interesting.</li>
+<li>Normals as colors for debugging</li>
+<li>For graphics it's cool to debug using visual tools</li>
+</ul>
+<h2 id="2019-concurrent-terrain-generation">2019 - concurrent terrain generation</h2>
+<p><img src="/yab-world/screenshot-2019.png" alt="Screenshot 2019" /></p>
+<p>Generating block columns</p>
+<ul>
+<li>Fastest and easiest</li>
+<li>Noise is expensive</li>
+<li>Best is 3D FBM noise with height factor</li>
+</ul>
+<h2 id="2020-client-server">2020 - client &amp; server</h2>
+<p><img src="/yab-world/screenshot-2020.png" alt="Screenshot 2020" /></p>
+<p>Saving the world through superchunks</p>
+<ul>
+<li>The world is periodically saved server-side. Chunks are grouped in 32x32x32 &quot;super chunks&quot; and compressed using run-length encoding and snappy compression. Worlds are saved per seed. </li>
+<li>Loading the world: saved chunks are loaded from disk, or from an in-memory cache of recently used super chunks to speed things up. </li>
+</ul>
+<p>Frequent refactoring</p>
+<ul>
+<li>Easy using vs code with rust analyzer</li>
+</ul>
+<p>Spreading the light</p>
+<ul>
+<li>Placing and removing lights</li>
+<li>Sunlight and gradients</li>
+<li>Flaw in sun positioning</li>
+</ul>
+<p>Mesh mania</p>
+<ul>
+<li>Meshing one of the most expensive tasks</li>
+<li>Done in separate thread that also receives generated chunks</li>
+<li>For meshing neighbouring chunks needed, order is important. Not sure if padding chunks isn't better</li>
+</ul>
+<h1 id="ideas-for-improvements">Ideas for improvements</h1>
+<p>Before losing inspiration for this project I was pondering a number of improvements to make / things to experiment with:</p>
+<ul>
+<li>Using <a href="https://github.com/grovesNL/glow">GL on whatever (glow)</a> for gl bindings.</li>
+<li>Use <a href="https://docs.rs/laminar/latest/laminar">laminar UDP</a> for networking. Currently networking is based on TCP.</li>
+<li>Use <a href="https://github.com/emilk/egui">egui</a> for gui. </li>
+<li>Rendering other players and player hands.</li>
+<li>Smoother movement of other players: movement prediction.</li>
+<li>Biomes: I actually made a working protype based on Voronoi cells but it didn't perform well enough.</li>
+<li>World objects (trees, houses).</li>
+<li>Something weird, e.g. change the setting to an asteroid field.</li>
+</ul>
+
+
+            </div>
+        </section>
+    </div>
+    <footer>
+        © 2021 Bas van Schoonhoven. Made using <a href="https://www.getzola.org" target="_blank">Zola</a>.
+    </footer>
+</body>
+
+</html>

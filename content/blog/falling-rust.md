@@ -72,4 +72,4 @@ The most complete version of a falling sand game that I found is [The Powder Toy
 
 ## The code
 
-The code is open source and available on [GitHub](https://github.com/grunnt/falling-rust).
+The code is open source and available on [GitHub](https://github.com/grunnt/falling-rust) (MIT License).
