@@ -17,11 +17,9 @@ $foreground-color: #FFF;
     margin: 0;
     padding: 0;
     font-size: 1em;
-    font-family: inherit;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     background-repeat: no-repeat;
-    color: $text-color;
 }
 
 html {
@@ -69,6 +67,8 @@ a:hover {
 
 body {
 	line-height: $baseline;
+    font-family: inherit;
+    color: $text-color;
 }
 
 html {
@@ -140,6 +140,10 @@ section li {
     margin-left: 16px;
 }
 
+section code {
+    font-size: 0.8em;
+}
+
 footer {
     width: 100%;
     height: 2.5em;
@@ -157,6 +161,10 @@ footer {
     padding-left: 1.5em;
     vertical-align: top;
     margin-top: 0;
+}
+
+.blog-summary p {
+    margin-top: 0.5rem;
 }
 
 .blog-list img {
