@@ -14,6 +14,10 @@ Although the groundwork laid in YAB-world is quite solid, its features are still
 
 ![Screenshot](/yab-world/screenshot.png)
 
+# How to run
+
+Download a pre-built version for Windows [here](https://github.com/grunnt/yab-world/releases). Download the ZIP file, unpack it somewhere and run *yab-world.exe*.
+
 ## Current features:
 - An infinite editable block-world
     - Generated in real-time using 3D noise
@@ -34,10 +38,6 @@ Although the groundwork laid in YAB-world is quite solid, its features are still
     - Simple resource gathering and building
     - Built-in profiler for debugging performance issues
     - A basic GUI inspired by [druid](https://docs.rs/druid/latest/druid) with a main menu, settings screen etc.
-
-# How to run
-
-Download a pre-built version for Windows [here](https://github.com/grunnt/yab-world/releases). Download the ZIP file, unpack it somewhere and run *yab-world.exe*.
 
 # Development
 

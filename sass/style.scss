@@ -9,7 +9,7 @@ $text-color: #3c3c3c;
 $h-color: #282828;
 $light-text-color: rgb(73, 73, 70);
 $color-three: #668449;
-$background-color: #F0EEEA;
+$background-color: #F7F5F3;
 $foreground-color: #FFF;
 
 // CSS reset
@@ -133,7 +133,8 @@ section {
 }
 
 section ul {
-    padding-left: 10px;
+    padding-left: 1rem;
+    margin-bottom: 1rem;
 }
 
 section li {
