@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Bas Blog About Code</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+
+<body>
+    <header>
+        <div id="logo">Bas</div>
+        <nav>
+            <ul>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/">About</a></li>
+                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">Code (GitHub)</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="center-column">
+        <section>
+            <div>
+                
+<h1 class="title">
+    YAB-World procedural generation
+</h1>
+<p class="subtitle"><strong>2022-01-19</strong></p>
+<p>Yet Another Block-World is a prototype infinite fully editable world for multiple players. You can read more about it <a href="/blog/yab-world">here</a>. On this page I will explain a bit more about the procedural world generation I used.</p>
+<p>The code is open source and available on <a href="https://github.com/grunnt/yab-world">GitHub</a> (MIT License). The full world generator code can be found <a href="https://github.com/grunnt/yab-world/tree/master/server/src/generator/generators">here</a> in the server crate.</p>
+<h1 id="the-terrain">The terrain</h1>
+<p><img src="/yab-world-generation/terrain-generation.jpg" alt="Resulting terrain" /></p>
+<p>A procedure for generating terrain for an infinite block-world needs to generate interesting terrain over a nearly infinite area. It should be quite fast as well, as we need to generate terrain in real-time.</p>
+<h2 id="blocks-and-chunks">Blocks and chunks</h2>
+<p>But first I'll talk a bit about the data model used to store the world. A block world is built out of, well, blocks. Each block is stored as an integer number, e.g. 0 = empty space, 1 = rock, 2 = dirt, etc. For a good looking result you minimally need rock and some kind of soil, e.g. desert sand or dirt with grass on top. </p>
+<p>We can't generate an infinite world in one go, so we need to cut it up in small pieces, and generate it piece by piece. Like most block-world implementations I divide the world into chunks. A chunk is a 3D array of blocks, although I store it as a flat array since this speeds up iteration over the array somewhat. </p>
+<p>Note that in the coordinate system I use here x and y are horizontal and z is vertical (up).</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">// Define the data type of the block (can be u16 or u32 depending on your needs as well)</span><span>
+</span><span style="color:#b48ead;">pub type </span><span>Block = </span><span style="color:#b48ead;">u8</span><span>;</span><span>
+</span><span>
+</span><span style="color:#65737e;">// We can define different types of blocks</span><span>
+</span><span style="color:#b48ead;">pub const </span><span style="color:#d08770;">EMPTY_BLOCK</span><span>: Block = </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span style="color:#b48ead;">pub const </span><span style="color:#d08770;">WATER_BLOCK</span><span>: Block = </span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span style="color:#b48ead;">pub const </span><span style="color:#d08770;">ROCK_BLOCK</span><span>: Block = </span><span style="color:#d08770;">2</span><span>;</span><span>
+</span><span style="color:#b48ead;">pub const </span><span style="color:#d08770;">DIRT_BLOCK</span><span>: Block = </span><span style="color:#d08770;">3</span><span>;</span><span>
+</span><span style="color:#b48ead;">pub const </span><span style="color:#d08770;">GRASS_BLOCK</span><span>: Block = </span><span style="color:#d08770;">4</span><span>;</span><span>
+</span><span style="color:#b48ead;">pub const </span><span style="color:#d08770;">SAND_BLOCK</span><span>: Block = </span><span style="color:#d08770;">5</span><span>;</span><span>
+</span><span>
+</span><span style="color:#65737e;">// The chunks are 16x16x16 blocks</span><span>
+</span><span style="color:#b48ead;">pub const </span><span style="color:#d08770;">CHUNK_SIZE</span><span>: </span><span style="color:#b48ead;">usize </span><span>= </span><span style="color:#d08770;">16</span><span>;</span><span>
+</span><span>
+</span><span style="color:#65737e;">// For fast indexing we can use bit shifting</span><span>
+</span><span style="color:#b48ead;">pub const </span><span style="color:#d08770;">BIT_SHIFT_Y</span><span>: </span><span style="color:#b48ead;">usize </span><span>= </span><span style="color:#d08770;">4</span><span>;</span><span>
+</span><span style="color:#b48ead;">pub const </span><span style="color:#d08770;">BIT_SHIFT_X</span><span>: </span><span style="color:#b48ead;">usize </span><span>= </span><span style="color:#d08770;">8</span><span>;</span><span>
+</span><span>
+</span><span style="color:#b48ead;">pub struct </span><span>Chunk {</span><span>
+</span><span>  </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">blocks</span><span>: Vec&lt;Block&gt;,</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#b48ead;">impl </span><span>Chunk {</span><span>
+</span><span>  </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span>() -&gt; </span><span style="color:#b48ead;">Self </span><span>{</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> blocks = vec![</span><span style="color:#d08770;">EMPTY_BLOCK</span><span>; </span><span style="color:#d08770;">CHUNK_SIZE </span><span>* </span><span style="color:#d08770;">CHUNK_SIZE </span><span>* </span><span style="color:#d08770;">CHUNK_SIZE</span><span>];</span><span>
+</span><span>    Chunk { blocks }</span><span>
+</span><span>  }</span><span>
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">get_block</span><span>(&amp;</span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#bf616a;">z</span><span>: </span><span style="color:#b48ead;">usize</span><span>) -&gt; Block {</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> index = z | y &lt;&lt; </span><span style="color:#d08770;">BIT_SHIFT_Y </span><span>| x &lt;&lt; </span><span style="color:#d08770;">BIT_SHIFT_X</span><span>;</span><span>
+</span><span>    </span><span style="color:#bf616a;">self</span><span>.blocks[index]</span><span>
+</span><span>  }</span><span>
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">set_block</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#bf616a;">z</span><span>: </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#bf616a;">block</span><span>: Block) {</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> index = z | y &lt;&lt; </span><span style="color:#d08770;">BIT_SHIFT_Y </span><span>| x &lt;&lt; </span><span style="color:#d08770;">BIT_SHIFT_X</span><span>;</span><span>
+</span><span>    </span><span style="color:#bf616a;">self</span><span>.blocks[index] = block;</span><span>
+</span><span>  }</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>When iterating over the blocks in a chunk (for example when generating a mesh for rendering), it is best to iterate over the array from the first element to the last element in sequence as this results in fewer CPU cache misses. This means that with the chunk code described above we iterate in x, y, z order:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">for</span><span> x in </span><span style="color:#d08770;">0</span><span>..</span><span style="color:#d08770;">CHUNK_SIZE </span><span>{</span><span>
+</span><span>  </span><span style="color:#b48ead;">for</span><span> y in </span><span style="color:#d08770;">0</span><span>..</span><span style="color:#d08770;">CHUNK_SIZE </span><span>{</span><span>
+</span><span>    </span><span style="color:#b48ead;">for</span><span> z in </span><span style="color:#d08770;">0</span><span>..</span><span style="color:#d08770;">CHUNK_SIZE </span><span>{</span><span>
+</span><span>      </span><span style="color:#b48ead;">let</span><span> block = chunk.</span><span style="color:#96b5b4;">get_block</span><span>(x, y, z);</span><span>
+</span><span>      </span><span style="color:#65737e;">// Do something with the block</span><span>
+</span><span>    }</span><span>
+</span><span>  }</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>It's worth nothing that although the world is infinite horizontally, I do define a minimum and maximum z value, which makes a lot of the work involved quite a bit easier.</p>
+<h2 id="world-generator-function">World generator function</h2>
+<p>Back to world generation. Since we can't generate the entire world in one go, we need a function call that generates part of the world. A logical signature for such a function would take an x, y, z coordinate as input and tell us what block goes there as output:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">generate</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">i16</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">i16</span><span>, </span><span style="color:#bf616a;">z</span><span>: </span><span style="color:#b48ead;">i16</span><span>) -&gt; Block</span><span>
+</span></code></pre>
+<p>This is a nice abstraction, but in practice I found it very difficult to get adequate performance when generating the world block-by-block. The main reason for this is that many optimizations require knowledge about blocks above or below the current block. For example, you need to know where rock ends to place soil on top of it. </p>
+<p>An alternative approach would be to generate chunks in one go, but this adds a lot of complexity (dealing with chunk borders) and offers very limited performance improvement as you still do not know about the chunks above or below the current chunk.</p>
+<p>The best signature that I found was to give an x and y coordinate as input and generate an 1x1 column of blocks ranging from the lowest possible z to the highest z:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">generate</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">i16</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">i16</span><span>) -&gt; Vec&lt;Block&gt;</span><span>
+</span></code></pre>
+<p>This avoids difficulties with chunk borders by generating every 1x1 column in isolation, allows optimizations based on knowledge of blocks below or above the current block, and is easy to parallelize. After a set of 16x16 columns is generated it can be copied over to column of chunks.</p>
+<h2 id="a-simple-heightmap-using-noise">A simple heightmap using noise</h2>
+<p>Now to the actual world generation. The most common approach to generating realistic looking terrain fast is by using procedural noise. Noise functions have the nice property that they are usually seeded, which means that given the same &quot;seed&quot;, the output of the function will always be idential for a given input. In other words, we can generate the same terrain if we have the same seed.</p>
+<p>One not so nice property of procedural noise is that generating it is <strong>slow</strong>. It's fast enough to do real-time world generation, but you should try to limit its use.</p>
+<p>To generate noise I use the Rust <a href="https://github.com/Razaekel/noise-rs">noise</a> library. A commonly used and relatively fast type of noise is Perlin noise. This type of noise typically results in smooth curves. So as a starting point we can use Perlin noise to generate &quot;height&quot; values which tell us how high the terrain at a given point is:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">use </span><span>common::block::*;</span><span>
+</span><span style="color:#b48ead;">use </span><span>common::chunk::{</span><span style="color:#d08770;">CHUNK_SIZE</span><span>, </span><span style="color:#d08770;">WORLD_HEIGHT_CHUNKS</span><span>};</span><span>
+</span><span style="color:#b48ead;">use </span><span>noise::*;</span><span>
+</span><span>
+</span><span style="color:#b48ead;">pub struct </span><span>HeightmapGenerator {</span><span>
+</span><span>  </span><span style="color:#bf616a;">height_noise</span><span>: Perlin,</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#b48ead;">impl </span><span>HeightmapGenerator {</span><span>
+</span><span>  </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span>(</span><span style="color:#bf616a;">seed</span><span>: </span><span style="color:#b48ead;">u32</span><span>) -&gt; </span><span style="color:#b48ead;">Self </span><span>{</span><span>
+</span><span>    HeightmapGenerator {</span><span>
+</span><span>      height_noise: Perlin::new().</span><span style="color:#96b5b4;">set_seed</span><span>(seed),</span><span>
+</span><span>    }</span><span>
+</span><span>  }</span><span>
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">generate</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">i16</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">i16</span><span>) -&gt; Vec&lt;Block&gt; {</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> roughness = </span><span style="color:#d08770;">0.015</span><span>; </span><span style="color:#65737e;">// How &quot;rough&quot; the terrain will be</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> terrain_min_z = </span><span style="color:#d08770;">64.0</span><span>; </span><span style="color:#65737e;">// Below this the world is rock</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> terrain_max_z = </span><span style="color:#d08770;">128.0</span><span>; </span><span style="color:#65737e;">// Above this the world is air</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> soil_thickness = </span><span style="color:#d08770;">3</span><span>; </span><span style="color:#65737e;">// How many &quot;soil&quot; blocks to place on top</span><span>
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Generate the height noise value for this coordinate</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> height_noise = </span><span style="color:#bf616a;">self</span><span>
+</span><span>      .height_noise</span><span>
+</span><span>      .</span><span style="color:#96b5b4;">get</span><span>([x as </span><span style="color:#b48ead;">f64 </span><span>* roughness, y as </span><span style="color:#b48ead;">f64 </span><span>* roughness])</span><span>
+</span><span>      * </span><span style="color:#d08770;">0.5</span><span>
+</span><span>      + </span><span style="color:#d08770;">0.5</span><span>;</span><span>
+</span><span>    </span><span style="color:#65737e;">// Convert it to a height value</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> height = terrain_min_z as </span><span style="color:#b48ead;">usize </span><span>+ (height_noise * (terrain_max_z - terrain_min_z)) as </span><span style="color:#b48ead;">usize</span><span>;</span><span>
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Now create and fill the 1x1 column of blocks</span><span>
+</span><span>    </span><span style="color:#b48ead;">let mut</span><span> blocks = vec![</span><span style="color:#d08770;">EMPTY_BLOCK</span><span>; </span><span style="color:#d08770;">WORLD_HEIGHT_CHUNKS </span><span>* </span><span style="color:#d08770;">CHUNK_SIZE</span><span>];</span><span>
+</span><span>    </span><span style="color:#b48ead;">for</span><span> z in </span><span style="color:#d08770;">0</span><span>..height {</span><span>
+</span><span>      blocks[z] = </span><span style="color:#d08770;">ROCK_BLOCK</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span style="color:#65737e;">// Put soil on top</span><span>
+</span><span>    </span><span style="color:#b48ead;">for</span><span> z in height..height + soil_thickness {</span><span>
+</span><span>      blocks[z] = </span><span style="color:#d08770;">SAND_BLOCK</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>    blocks</span><span>
+</span><span>  }</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>By using a perlin heightmap we get terrain that looks like this:</p>
+<p><img src="/yab-world-generation/heightmap_perlin.jpg" alt="Perlin heightmap terrain" /></p>
+<p>It's a start but it looks way too smooth.</p>
+<h2 id="layered-noise-for-a-more-natural-look">Layered noise for  a more natural look</h2>
+<p>To give the terrain a more natural look we need to add some detail. This can be done by using a different noise function: Fractal Brownian motion (FBM) noise. FBM noise boils down to combining several &quot;layers&quot; of Perlin noise of increasingly greater detail. The result will be more detailed, but also a bit slower as more noise values need to be calculated.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">use </span><span>common::block::*;</span><span>
+</span><span style="color:#b48ead;">use </span><span>common::chunk::{</span><span style="color:#d08770;">CHUNK_SIZE</span><span>, </span><span style="color:#d08770;">WORLD_HEIGHT_CHUNKS</span><span>};</span><span>
+</span><span style="color:#b48ead;">use </span><span>noise::*;</span><span>
+</span><span>
+</span><span style="color:#b48ead;">pub struct </span><span>FbmHeightmapGenerator {</span><span>
+</span><span>    </span><span style="color:#bf616a;">height_noise</span><span>: Fbm,</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#b48ead;">impl </span><span>FbmHeightmapGenerator {</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span>(</span><span style="color:#bf616a;">seed</span><span>: </span><span style="color:#b48ead;">u32</span><span>) -&gt; </span><span style="color:#b48ead;">Self </span><span>{</span><span>
+</span><span>        FbmHeightmapGenerator {</span><span>
+</span><span>            height_noise: Fbm::new().</span><span style="color:#96b5b4;">set_seed</span><span>(seed),</span><span>
+</span><span>        }</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">generate</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">i16</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">i16</span><span>) -&gt; Vec&lt;Block&gt; {</span><span>
+</span><span>      </span><span style="color:#65737e;">// Otherwise identical to the Perlin noise example</span><span>
+</span></code></pre>
+<p>Using layered noise gives a somewhat more natural looking terrain:</p>
+<p><img src="/yab-world-generation/heightmap_fbm.jpg" alt="FBM heightmap terrain" /></p>
+<p>However, there are still no real cliffs (see any rock?) and no overhangs, so it is still not very interesting.</p>
+<h2 id="adding-a-third-dimension">Adding a third dimension</h2>
+<p>To allow overhangs and steep cliffs to exists, we need to add a third dimension to the noise. This is easily done by adding the z coordinate to the noise function:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">for</span><span> z in </span><span style="color:#d08770;">1</span><span>..</span><span style="color:#d08770;">WORLD_HEIGHT_CHUNKS </span><span>* </span><span style="color:#d08770;">CHUNK_SIZE </span><span>{</span><span>
+</span><span>  </span><span style="color:#65737e;">// Get a noise value between 0 and 1</span><span>
+</span><span>  </span><span style="color:#b48ead;">let</span><span> noise = </span><span style="color:#bf616a;">self</span><span>.noise.</span><span style="color:#96b5b4;">get</span><span>([</span><span>
+</span><span>      x as </span><span style="color:#b48ead;">f64 </span><span>* roughness,</span><span>
+</span><span>      y as </span><span style="color:#b48ead;">f64 </span><span>* roughness,</span><span>
+</span><span>      z as </span><span style="color:#b48ead;">f64 </span><span>* roughness,</span><span>
+</span><span>    ]) * </span><span style="color:#d08770;">0.5 </span><span>+ </span><span style="color:#d08770;">0.5</span><span>;</span><span>
+</span><span>  </span><span style="color:#65737e;">// If its below some tweakable value place a block</span><span>
+</span><span>  blocks[z] = </span><span style="color:#b48ead;">if</span><span> noise &lt; </span><span style="color:#d08770;">0.5 </span><span>{</span><span>
+</span><span>	  </span><span style="color:#d08770;">ROCK_BLOCK</span><span>
+</span><span>  } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span>  	</span><span style="color:#d08770;">EMPTY_BLOCK</span><span>
+</span><span>  }</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>This results in a fantastically weird structure of huge &quot;caves&quot; and holes in the terrain:</p>
+<p><img src="/yab-world-generation/3d-noise-no-falloff.jpg" alt="3D noise terrain" /></p>
+<p>The problem with this is that the 3D noise stretches vertically into infinity so we do not have a real landscape. We need to make sure that the generated terrain has a minimum and maximum z coordinate, and a natural looking transition between the two.</p>
+<h2 id="taming-the-noise-using-a-height-falloff">Taming the noise using a height falloff</h2>
+<p>To get a real landscape using layered 3D noise we need to introduce a &quot;height factor&quot;. The height factor goes from 0 at the minimum terrain z to 1 at the maximum terrain z.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">use </span><span>common::block::*;</span><span>
+</span><span style="color:#b48ead;">use </span><span>common::chunk::{</span><span style="color:#d08770;">CHUNK_SIZE</span><span>, </span><span style="color:#d08770;">WORLD_HEIGHT_CHUNKS</span><span>};</span><span>
+</span><span style="color:#b48ead;">use </span><span>noise::*;</span><span>
+</span><span>
+</span><span style="color:#b48ead;">pub struct </span><span>TerrainGenerator {</span><span>
+</span><span>  </span><span style="color:#bf616a;">noise</span><span>: Fbm,</span><span>
+</span><span>}</span><span>
+</span><span>
+</span><span style="color:#b48ead;">impl </span><span>TerrainGenerator {</span><span>
+</span><span>  </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">new</span><span>(</span><span style="color:#bf616a;">seed</span><span>: </span><span style="color:#b48ead;">u32</span><span>) -&gt; </span><span style="color:#b48ead;">Self </span><span>{</span><span>
+</span><span>    TerrainGenerator {</span><span>
+</span><span>      noise: Fbm::new().</span><span style="color:#96b5b4;">set_seed</span><span>(seed),</span><span>
+</span><span>    }</span><span>
+</span><span>  }</span><span>
+</span><span>
+</span><span>  </span><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">generate</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">i16</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">i16</span><span>) -&gt; Vec&lt;Block&gt; {</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> roughness = </span><span style="color:#d08770;">0.011</span><span>; </span><span style="color:#65737e;">// How &quot;rough&quot; the terrain will be</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> terrain_min_z = </span><span style="color:#d08770;">64</span><span>; </span><span style="color:#65737e;">// Below this the world is rock</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> terrain_max_z = </span><span style="color:#d08770;">192</span><span>; </span><span style="color:#65737e;">// Above this the world is air</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> soil_thickness = </span><span style="color:#d08770;">3</span><span>; </span><span style="color:#65737e;">// How many blocks of soil to place on top of rock</span><span>
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Below the minimum terrain z we just place rock</span><span>
+</span><span>    </span><span style="color:#b48ead;">let mut</span><span> blocks = vec![</span><span style="color:#d08770;">EMPTY_BLOCK</span><span>; </span><span style="color:#d08770;">WORLD_HEIGHT_CHUNKS </span><span>* </span><span style="color:#d08770;">CHUNK_SIZE</span><span>];</span><span>
+</span><span>    </span><span style="color:#b48ead;">for</span><span> z in </span><span style="color:#d08770;">0</span><span>..terrain_min_z {</span><span>
+</span><span>      blocks[z] = </span><span style="color:#d08770;">ROCK_BLOCK</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// For the terrain we go from the minimum to maximum</span><span>
+</span><span>    </span><span style="color:#b48ead;">for</span><span> z in terrain_min_z..terrain_max_z {</span><span>
+</span><span>      </span><span style="color:#65737e;">// Get a noise value between 0 and 1</span><span>
+</span><span>      </span><span style="color:#b48ead;">let</span><span> noise = </span><span style="color:#bf616a;">self</span><span>.noise.</span><span style="color:#96b5b4;">get</span><span>([</span><span>
+</span><span>        x as </span><span style="color:#b48ead;">f64 </span><span>* roughness,</span><span>
+</span><span>        y as </span><span style="color:#b48ead;">f64 </span><span>* roughness,</span><span>
+</span><span>        z as </span><span style="color:#b48ead;">f64 </span><span>* roughness,</span><span>
+</span><span>      ]) * </span><span style="color:#d08770;">0.5</span><span>
+</span><span>        + </span><span style="color:#d08770;">0.5</span><span>;</span><span>
+</span><span>      </span><span style="color:#65737e;">// Now calculate a &quot;height factor&quot;</span><span>
+</span><span>      </span><span style="color:#b48ead;">let</span><span> h_factor = (z - terrain_min_z) as </span><span style="color:#b48ead;">f64 </span><span>/ (terrain_max_z - terrain_min_z) as </span><span style="color:#b48ead;">f64</span><span>;</span><span>
+</span><span>      </span><span style="color:#65737e;">// By adding the two we ensure that the higher we go,</span><span>
+</span><span>      </span><span style="color:#65737e;">// the less likely it is that a block will appear.</span><span>
+</span><span>      </span><span style="color:#b48ead;">let</span><span> block = </span><span style="color:#b48ead;">if</span><span> noise + h_factor &lt; </span><span style="color:#d08770;">1.0 </span><span>{</span><span>
+</span><span>        </span><span style="color:#d08770;">ROCK_BLOCK</span><span>
+</span><span>      } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span>        </span><span style="color:#d08770;">EMPTY_BLOCK</span><span>
+</span><span>      };</span><span>
+</span><span>      blocks[z] = block;</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// We make a final pass to place soil</span><span>
+</span><span>    </span><span style="color:#b48ead;">let mut</span><span> soil_added = </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span>    </span><span style="color:#b48ead;">for</span><span> z in </span><span style="color:#d08770;">0</span><span>..blocks.</span><span style="color:#96b5b4;">len</span><span>() {</span><span>
+</span><span>      </span><span style="color:#b48ead;">let</span><span> block = blocks[z];</span><span>
+</span><span>      </span><span style="color:#b48ead;">if</span><span> block == </span><span style="color:#d08770;">EMPTY_BLOCK </span><span>{</span><span>
+</span><span>        </span><span style="color:#b48ead;">if</span><span> soil_added &lt; soil_thickness {</span><span>
+</span><span>          </span><span style="color:#b48ead;">if</span><span> soil_added == soil_thickness - </span><span style="color:#d08770;">1 </span><span>{</span><span>
+</span><span>            blocks[z] = </span><span style="color:#d08770;">GRASS_BLOCK</span><span>;</span><span>
+</span><span>          } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span>            blocks[z] = </span><span style="color:#d08770;">DIRT_BLOCK</span><span>;</span><span>
+</span><span>          }</span><span>
+</span><span>          soil_added += </span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span>        }</span><span>
+</span><span>      } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span>        </span><span style="color:#65737e;">// Since we have overhangs we may need to place more</span><span>
+</span><span>        soil_added = </span><span style="color:#d08770;">0</span><span>;</span><span>
+</span><span>      }</span><span>
+</span><span>    }</span><span>
+</span><span>    blocks</span><span>
+</span><span>  }</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>The constant values in the code (e.g. roughness or terrain min and max z) require a quite a lot of trial-and-error before it looks good. Most values result in either dull or completely crazy landscapes. Procedural world generation is more like engineering than science :-)</p>
+<p><img src="/yab-world-generation/terrain-generation.jpg" alt="Resulting terrain" /></p>
+<p>This gives a nice and interesting terrain with overhangs and cliffs, pretty similar to how Minecraft terrain was originally generated. One artefact that can occur is &quot;floating islands&quot;: small clumps of blocks that are not attached to the terrain but float in the air, something you will be familiar with if you have played Minecraft. By increasing terrain roughness the chance of these floating islands occurring will also increase. </p>
+<p><img src="/yab-world-generation/floating-island.jpg" alt="Floating islands" /></p>
+<h2 id="placing-resources">Placing resources</h2>
+<p>In YAB-world I also added resources such as gold or iron. To place resources, we need to determine which rock blocks should be changed into a resource, and what type of resouce it should be. There are many ways to do this, but I found that using one perlin noise value to determine where to place resources and another to determine what value it should be worked fine.</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">let</span><span> rock_block = {</span><span>
+</span><span>  </span><span style="color:#b48ead;">let</span><span> resource_scale = </span><span style="color:#d08770;">0.1</span><span>; </span><span style="color:#65737e;">// Larger scale means further apart and larger clumps</span><span>
+</span><span>  </span><span style="color:#b48ead;">let</span><span> resource_density = </span><span style="color:#d08770;">0.3</span><span>; </span><span style="color:#65737e;">// Higher density means more ore</span><span>
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// Determine whether resource should be placed here</span><span>
+</span><span>  </span><span style="color:#b48ead;">let</span><span> resource_noise = (</span><span style="color:#bf616a;">self</span><span>.resource_density_noise.</span><span style="color:#96b5b4;">get</span><span>([</span><span>
+</span><span>    x as </span><span style="color:#b48ead;">f64 </span><span>* resource_scale,</span><span>
+</span><span>    y as </span><span style="color:#b48ead;">f64 </span><span>* resource_scale,</span><span>
+</span><span>    z as </span><span style="color:#b48ead;">f64 </span><span>* resource_scale,</span><span>
+</span><span>  ]) * </span><span style="color:#d08770;">0.5</span><span>
+</span><span>    + </span><span style="color:#d08770;">0.5</span><span>)</span><span>
+</span><span>    .</span><span style="color:#96b5b4;">powf</span><span>(</span><span style="color:#d08770;">3.0</span><span>);  </span><span style="color:#65737e;">// Another tweakable, increase power to make clumps smaller</span><span>
+</span><span>  </span><span style="color:#b48ead;">if</span><span> resource_noise &gt; </span><span style="color:#d08770;">1.0 </span><span>- resource_density {</span><span>
+</span><span>    </span><span style="color:#65737e;">// We should place a resource. Of what type?</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> resource_type_scale = </span><span style="color:#d08770;">0.002</span><span>;</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> type_noise = </span><span style="color:#bf616a;">self</span><span>.resource_type_noise.</span><span style="color:#96b5b4;">get</span><span>([</span><span>
+</span><span>      x as </span><span style="color:#b48ead;">f64 </span><span>* resource_type_scale,</span><span>
+</span><span>      y as </span><span style="color:#b48ead;">f64 </span><span>* resource_type_scale,</span><span>
+</span><span>    ]) * </span><span style="color:#d08770;">2.0</span><span>;</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> type_noise &lt; </span><span style="color:#d08770;">1.0 </span><span>{</span><span>
+</span><span>      </span><span style="color:#d08770;">GOLD_BLOCK</span><span>
+</span><span>    } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span>      </span><span style="color:#d08770;">IRON_BLOCK</span><span>
+</span><span>    }</span><span>
+</span><span>  } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span>    </span><span style="color:#d08770;">ROCK_BLOCK</span><span>
+</span><span>  }</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>Using this code lets us place nice small clumps of resource to discover by digging, or along cliffs:</p>
+<p><img src="/yab-world-generation/resources.jpg" alt="Resource placement" /></p>
+<h2 id="further-steps">Further steps</h2>
+<p>Placing water is quite easy: just place water at any block below water level that is empty. The soil at or below water level (and perhaps 1 or 2 blocks above) can be made sand to give an impression of beaches. This means that the water level will be the same everywhere. Unfortunately in an infinite world like this somethings are prohibitively difficult, and having varying water levels is one of them.</p>
+<p>Another addition would be supporting different biomes. I experimented with different approaches to generate biomes, including voronoi diagrams and &quot;emergent&quot; generation based on temperature, humidity and other values. Voronoi diagrams are relatively easy to generate, but creating different biomes based on the diagrams and especially generating convincing transitions between biomes is a difficult task. Maybe something for another time!</p>
+
+
+            </div>
+        </section>
+    </div>
+    <footer>
+        © 2022 Bas van Schoonhoven. Made using <a href="https://www.getzola.org" target="_blank">Zola</a>.
+    </footer>
+</body>
+
+</html>

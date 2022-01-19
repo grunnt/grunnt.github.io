@@ -8,7 +8,8 @@
     {% for page in section.pages %}
     <div>
         {% if page.extra.blog_icon %}
-        <img src="{{ page.extra.blog_icon }}" alt="Blog post icon" height="160" />
+        <a href="{{ page.permalink | safe }}"><img src="{{ page.extra.blog_icon }}" alt="Blog post icon"
+                height="160" /></a>
         {% endif %}
         <div class="blog-summary">
             <h2>{{ page.title }}</h2>

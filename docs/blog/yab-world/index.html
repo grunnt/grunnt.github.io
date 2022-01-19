@@ -26,87 +26,50 @@
     YAB-World
 </h1>
 <p class="subtitle"><strong>2021-12-10</strong></p>
-<p>The past years I worked on and off on Yet Another Block-World, for fun and to learn more about Rust and OpenGL. Like many developers I saw <a href="https://www.minecraft.net">Minecraft</a> and wanted to experiment with a block world of my own. </p>
-<p>Getting a few blocks rendered on screen was relatively easy. However, getting from there to an infinite fully multi-user real-time generated smoothy performing block world was a whole lot more complex. I started working on this before any rust game engines were mature enough to use, so I built everything pretty much from the ground up.</p>
-<p>Although the groundwork laid in YAB-world is quite solid, its features are still pretty much proof of concept and you can't do much more than dig and build with a limited set of blocks. </p>
+<p>Yet Another Block-World is a prototype infinite fully editable world for multiple players.</p>
 <p><img src="/yab-world/screenshot.png" alt="Screenshot" /></p>
 <h1 id="how-to-run">How to run</h1>
 <p>Download a pre-built version for Windows <a href="https://github.com/grunnt/yab-world/releases">here</a>. Download the ZIP file, unpack it somewhere and run <em>yab-world.exe</em>.</p>
-<h2 id="current-features">Current features:</h2>
+<p>The code is open source and available on <a href="https://github.com/grunnt/yab-world">GitHub</a> (MIT License).</p>
+<h1 id="controls">Controls</h1>
 <ul>
-<li>An infinite editable block-world
-<ul>
-<li>Generated in real-time using 3D noise</li>
-<li>Server / client multiplayer</li>
-<li>Generate rough hills (a la original Minecraft), a water world or a flat world</li>
-<li>Automatic world saving</li>
-<li>Placing and removing light-emitting blocks</li>
-<li>View-direction-based prioritization of world generation</li>
+<li>Look around using mouse</li>
+<li>Left mouse button: mine blocks</li>
+<li>Right mouse button: place blocks</li>
+<li>WASD = movement</li>
+<li>Space = jump</li>
+<li>Tab = select block</li>
+<li>L = toggle line rendering</li>
+<li>K = toggle fog rendering</li>
+<li>X = toggle mouse capture</li>
+<li>G = show / hide GUI</li>
+<li>Shift + F = toggle &quot;god mode&quot; which enables flight and disables collision detection</li>
+<li>Escape = return to menu</li>
 </ul>
-</li>
-<li>Efficient rendering using OpenGL
+<h2 id="features">Features:</h2>
 <ul>
-<li>Easily add block textures, can be different on each side</li>
-<li>Transparent water</li>
-<li>Screen Space Ambient Occlusion</li>
-<li>Day/night cycle with sky dome, sun and dusk &amp; dawn effects and block shading</li>
-<li>Some particle effects</li>
-<li>Sunlight propagation</li>
-</ul>
-</li>
-<li>Interaction
-<ul>
+<li>An infinite editable block-worldm generated in real-time using 3D noise</li>
+<li>Different world types: rough hills (a la original Minecraft), an alien ice landscape, a water world or a flat world</li>
 <li>Arcade style collision detection and player movement</li>
 <li>Simple resource gathering and building</li>
-<li>Built-in profiler for debugging performance issues</li>
+<li>Placing and removing light-emitting blocks</li>
+<li>Server / client multiplayer</li>
+<li>Automatic world saving</li>
+<li>Efficient rendering using OpenGL, allowing huge render distances</li>
+<li>Day/night cycle with sky dome, sun and dusk &amp; dawn effects and block shading</li>
+<li>Screen Space Ambient Occlusion (SSAO)</li>
+<li>Transparent water</li>
+<li>Some particle effects</li>
 <li>A basic GUI inspired by <a href="https://docs.rs/druid/latest/druid">druid</a> with a main menu, settings screen etc.</li>
+<li>Built-in visual profiler</li>
 </ul>
-</li>
-</ul>
+<p>There are some obvious things missing in this prototype such as rendering of the player's hands or other players. There are no different biomes. And of course, there is no meaningful gameplay. Still, it's nice to fool around and build things!</p>
 <h1 id="development">Development</h1>
 <p>The code is open source and available on <a href="https://github.com/grunnt/yab-world">GitHub</a> (MIT License). It now is a whopping 80k lines of code (which are partially generated, e.g. the OpenGL bindings).</p>
 <p>It is written in <a href="https://www.rust-lang.org">Rust</a>. I make extensive use of threading to speed things up and make the client run smoothly, and Rust has been a great help in that. <a href="https://doc.rust-lang.org/book/ch16-00-concurrency.html">Fearless concurrency</a> indeed!</p>
-<h2 id="the-z-fight-2018">The Z fight (2018)</h2>
-<p>I started out by following the <a href="https://nercury.github.io/rust/opengl/tutorial/2018/02/08/opengl-in-rust-from-scratch-00-setup.html">Rust and OpenGL from scratch tutorial</a>. This got me going in OpenGL, and after some struggles I got blocks rendered!</p>
-<p><img src="/yab-world/screenshot-2018.png" alt="Screenshot 2018" /></p>
-<p>The original working title for this was &quot;Octagia&quot;. I had some ideas about a revolution involving sloped blocks (octagon, hint), but that didnt turn out to be very interesting.</p>
-<p>One thing you can clearly see on this screenshot is a phenomenon called &quot;z-fighting&quot;. For the pixels at the corners of the blocks the view z coordinate (roughly the distance from the camera) was identical in most cases, so the renderer would not know which pixel to choose and take a random one instead. I'm not sure whether it was a depth buffer or coordinate rounding issue, but I got it fixed eventually.</p>
-<p>Also, the z-fighting shows that initially I rendered <em>all</em> block surfaces, even the ones that were not visible. Fixing this is quite easy: simply do not generate a mesh for the sides of the block that are adjacent to another block. If the world is divided into chunks, this is somewhat more difficult as you need to check neighbouring chunks for the border blocks.</p>
-<p>Finally, the colors in the screenshot are actually the <em>normals</em> of the surfaces. Rendering normals or other values as colors is a great trick in debugging rendering issues.</p>
-<h2 id="concurrent-terrain-generation-2019">Concurrent terrain generation (2019)</h2>
-<p>From those humble beginnings I moved on to get some actual terrain generated. After experimenting with several approaches I settled in a world generator function that takes an x and y coordinate as input and return a vertical column of blocks (from bedrock to maximum terrain height). This turned out to be optimal both for performance and was conceptually the easiest to work with. </p>
-<p><img src="/yab-world/screenshot-2019.png" alt="Screenshot 2019" /></p>
-<p>The terrain on this screenshot is based on a simple heightmap. In the end I got the best results using layered 3D noise and reducing the noise strength proportionally to the world z coordinate, so higher positions would have a smaller chance of containing a block:</p>
-<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span> </span><span style="color:#b48ead;">let</span><span> noise = </span><span style="color:#bf616a;">self</span><span>.terrain_noise.</span><span style="color:#96b5b4;">get</span><span>(x as </span><span style="color:#b48ead;">f64</span><span>, y as </span><span style="color:#b48ead;">f64</span><span>, z as </span><span style="color:#b48ead;">f64</span><span>, roughness);</span><span>
-</span><span> </span><span style="color:#b48ead;">let</span><span> noise = noise.</span><span style="color:#96b5b4;">powf</span><span>(</span><span style="color:#d08770;">2.0</span><span>);</span><span>
-</span><span> </span><span style="color:#b48ead;">let</span><span> h_factor = (z - terrain_min_z) as </span><span style="color:#b48ead;">f64 </span><span>/ terrain_z_range as </span><span style="color:#b48ead;">f64</span><span>;</span><span>
-</span><span> </span><span style="color:#b48ead;">let</span><span> block = </span><span style="color:#b48ead;">if</span><span> noise + h_factor &lt; </span><span style="color:#d08770;">0.5 </span><span>{</span><span>
-</span><span>   Block::rock_block()</span><span>
-</span><span> } </span><span style="color:#b48ead;">else </span><span>{</span><span>
-</span><span>   Block::empty_block()</span><span>
-</span><span> };</span><span>
-</span></code></pre>
-<p>This gives a nice and interesting terrain with overhangs and cliffs, pretty similar to how Minecraft terrain was originally generated. One artefact that can occur is &quot;floating islands&quot;: small clumps of blocks that are not attached to the terrain but float in the air, something you will be familiar with if you have played Minecraft.</p>
-<h2 id="building-together-2020">Building together (2020)</h2>
-<p>To allow multiple players I had to split up the code in a server and client component. Multiple clients can connect to a single server. The server generates the world and distributes updates on player movements and actions.</p>
-<p><img src="/yab-world/screenshot-2020.png" alt="Screenshot 2020" /></p>
-<h2 id="saving-the-world-through-superchunks">Saving the world through superchunks</h2>
-<p>The world in memory is divided chunks of 16x16x16 blocks. This is neccessary to keep the meshing of a chunk of blocks fast enough for real-time editing. In YAB-World I store the chunks in vertical &quot;columns&quot; of chunks, and on the server-side these columns are stored in &quot;super chunks&quot; of 32x32 chunks. The super chunks are saved periodically to disk.</p>
-<p>These super chunks make sure that only a limited number of files need to be created for each world, which is more efficient. The super chunks are compressed using run-length encoding and snappy compression. Whenever a chunk is requested by a client the server checks an in-memory cache whether it is already loaded, if not it tries to load the chunk from a super chunk. If this fails the chunk is generated anew. </p>
-<h2 id="spreading-the-light">Spreading the light</h2>
-<p>Adding light blocks to the world was also quite a challenge. In many games the lights are calculated in real-time, but in YAB-World the light propagation is precalculated whenever a block is placed or removed. Propagation light is done using a breadth-first search where the strength of the light is reduced for each step away from the light source. Getting this just right requires a lot of tweaking. </p>
-<p>Sunlight is propagated in a similar manner, but starts by propagating light from the top of the world downwards. </p>
-<h1 id="ideas-for-improvements">Ideas for improvements</h1>
-<p>Before losing inspiration for this project I was pondering a number of improvements to make / things to experiment with:</p>
+<p>Read more about the development of YAB-World:</p>
 <ul>
-<li>Using <a href="https://github.com/grovesNL/glow">GL on whatever (glow)</a> for gl bindings.</li>
-<li>Use <a href="https://docs.rs/laminar/latest/laminar">laminar UDP</a> for networking. Currently networking is based on TCP.</li>
-<li>Use <a href="https://github.com/emilk/egui">egui</a> for gui. </li>
-<li>Rendering other players and player hands.</li>
-<li>Smoother movement of other players: movement prediction.</li>
-<li>Biomes: I actually made a working protype based on Voronoi cells but it didn't perform well enough.</li>
-<li>World objects (trees, houses).</li>
-<li>Something weird, e.g. change the setting to an asteroid field.</li>
+<li><a href="/blog/yab-world-generation">YAB-World procedural generation</a></li>
 </ul>
 
 
@@ -114,7 +77,7 @@
         </section>
     </div>
     <footer>
-        © 2021 Bas van Schoonhoven. Made using <a href="https://www.getzola.org" target="_blank">Zola</a>.
+        © 2022 Bas van Schoonhoven. Made using <a href="https://www.getzola.org" target="_blank">Zola</a>.
     </footer>
 </body>
 

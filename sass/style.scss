@@ -95,6 +95,9 @@ header {
     line-height: 2.5em;
     background: #fff;
     z-index: 1;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 #logo {
@@ -132,22 +135,41 @@ section {
     text-align: justify;
 }
 
+section h1, section h2, section h3 {
+    text-align: left;
+}
+
 section ul {
     padding-left: 1rem;
     margin-bottom: 1rem;
+    margin-top: 0.5rem;
 }
 
 section li {
-    margin-left: 16px;
+    margin-left: 0.5rem;
+    padding-left: 0.5rem;
 }
 
 section code {
     font-size: 0.8em;
 }
 
+section img {
+    max-width: 100%;
+}
+
+section pre.language-rust {
+    overflow-x: auto;
+    line-height: 1rem;
+    padding: 0.5rem;
+}
+
+section pre.language-rust * + * {
+    margin-top: 0;
+}
+
 footer {
     width: 100%;
-    height: 2.5em;
     line-height: 2.5em;
     background: #CDDF8B;
     text-align: center;
