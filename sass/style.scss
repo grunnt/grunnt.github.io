@@ -194,3 +194,17 @@ footer {
     width: 200px;
     height: auto;
 }
+
+form {
+    text-align: left;
+}
+
+form input, form textarea {
+    width: 100%;
+}
+
+form button {
+    font-family: inherit;
+    padding: 1px 7px;
+    margin-top: 0.5rem;
+}
