@@ -203,6 +203,10 @@ form input, form textarea {
     width: 100%;
 }
 
+form textarea {
+    height: 8rem;
+}
+
 form button {
     font-family: inherit;
     padding: 1px 7px;
