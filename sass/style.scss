@@ -16,14 +16,14 @@ $foreground-color: #FFF;
 * {
     margin: 0;
     padding: 0;
-    font-size: 1em;
+    font-size: 100%;
     box-sizing: border-box;
     -webkit-font-smoothing: antialiased;
     background-repeat: no-repeat;
 }
 
 html {
-    font-size: 25px;
+    font-size: 140%;
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
     -moz-osx-font-smoothing: grayscale;
