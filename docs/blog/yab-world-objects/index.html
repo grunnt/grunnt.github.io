@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Bas Blog About Code</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+</head>
+
+<body>
+    <header>
+        <div id="logo">Bas</div>
+        <nav>
+            <ul>
+                <li><a href="/blog">Blog</a></li>
+                <li><a href="/">About</a></li>
+                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">Code (GitHub)</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="center-column">
+        <section>
+            <div>
+                
+<h1 class="title">
+    YAB-World procedural objects
+</h1>
+<p class="subtitle"><strong>2022-02-07</strong></p>
+<p><a href="/blog/yab-world">Yet Another Block-World</a> is a prototype infinite fully editable world for multiple players. On this page I will explain a bit more about the way the procedural objects are generated and placed. I will assume that you have read the earlier article about <a href="/blog/yab-world-generation">world generation</a>.</p>
+<p>The code is open source and available on <a href="https://github.com/grunnt/yab-world">GitHub</a> (MIT License). The code for generating objects can be found <a href="https://github.com/grunnt/yab-world/tree/master/server/src/generator/object_generator">here</a> in the server crate. The code for placing the objects can be found <a href="https://github.com/grunnt/yab-world/tree/master/server/src/generator/object_placer">here</a>.</p>
+<h1 id="the-objects">The objects</h1>
+<p><img src="/yab-world-objects/yab-world-objects.jpg" alt="Objects in YAB-World" /></p>
+<p>For YAB-World I wanted to figure out how to add objects to a block world such as trees or towers. This poses us with two problems: (1) how to procedually generate a tree or tower and (2) how to place the objects in an infinite block world.</p>
+<p>There are several ways to go at this:</p>
+<ol>
+<li>Only place objects after a chunk and all 8 neighbours are generated. This complicates the chunk generation workflow, however. It also puts a practical limit on the size of objects to avoid overlaps with additional chunks.</li>
+<li>Place objects by procedurally generating the object during terrain generation. Although this would result in a nice and clean interface, generating complex objects this way is extremely difficult.</li>
+<li>Procedurally generating a set of objects before the world is loaded and sampling the pregenerated objects to place them. This makes object placement relatively simple but limits the variety in possible object that can be encountered in a single world.</li>
+</ol>
+<p>After experimenting with these approaches I settled on option 3: placing pregenerated objects. Although this limits the variety in a single world somewhat, in practice it can give a world a kind of character based on its seed since the objects in the world are specific to that world. Another cool thing about pregenerated objects is that they could be manually created (e.g. in a voxel editor) and loaded on startup instead of generated.</p>
+<h2 id="generating-the-objects">Generating the objects</h2>
+<p>To place the objects I use a distorted grid, which I will explain later. But first the easy part: pregenerating some procedural objects. In our case, many different trees and several different towers.</p>
+<p>Pregenerated objects can be stored much like the chunks as I described in my previous article: a flat array indexed by x, y, z. We need a width, height an depth, as this can be different for each object. We also need an &quot;anchor&quot; position: this is a position in the pregenerated object that will be aligned with the terrain.</p>
+<p>For storing the pregenerated objects I use the following structure:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>PregeneratedObject {</span><span>
+</span><span>    </span><span style="color:#65737e;">// Anchor will be aligned with the terrain, e.g. a door</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">anchor_x</span><span>: </span><span style="color:#b48ead;">usize</span><span>,  </span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">anchor_y</span><span>: </span><span style="color:#b48ead;">usize</span><span>,</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">anchor_z</span><span>: </span><span style="color:#b48ead;">usize</span><span>,</span><span>
+</span><span>    </span><span style="color:#65737e;">// Size of the object</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">size_x</span><span>: </span><span style="color:#b48ead;">usize</span><span>,    </span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">size_y</span><span>: </span><span style="color:#b48ead;">usize</span><span>,</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">size_z</span><span>: </span><span style="color:#b48ead;">usize</span><span>,</span><span>
+</span><span>    </span><span style="color:#65737e;">// The array with the blocks</span><span>
+</span><span>    </span><span style="color:#65737e;">// Indexed using z + y * size_z + x * size_z * size_y</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">blocks</span><span>: Vec&lt;Block&gt;,</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>To make things easier I implemented a few functions on <code>PregeneratedObject</code>, such as a <code>get</code> and <code>set</code> block function, and helpers such as <code>set_rectangle</code> and <code>fill_sphere</code>.</p>
+<p>The function signature for generating an object is simple:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">generate</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>) -&gt; PregeneratedObject;</span><span>
+</span></code></pre>
+<p>The object generator should be seeded as well (I pass the seed in the object generator's <code>new</code> function), so that each time the objects are generated for a world with a specific seed they are the same. Repeated calls to the <code>generate</code> function should generate different objects, e.g. trees in different sizes and shapes.</p>
+<h3 id="generating-a-tree">Generating a tree</h3>
+<p>For YAB-World I made a generator for simple trees consisting of a single trunk and a spherical clump of leaves on top. The radius of the sphere of leaves and the height of the trunk are randomized:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">generate</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>) -&gt; PregeneratedObject {</span><span>
+</span><span>  </span><span style="color:#65737e;">// Figure out how large our tree will be</span><span>
+</span><span>  </span><span style="color:#b48ead;">let</span><span> radius = </span><span style="color:#d08770;">2 </span><span>+ (</span><span style="color:#bf616a;">self</span><span>.random.</span><span style="color:#96b5b4;">next_u32</span><span>() % </span><span style="color:#d08770;">3</span><span>) as </span><span style="color:#b48ead;">usize</span><span>;</span><span>
+</span><span>  </span><span style="color:#b48ead;">let</span><span> size_xy = radius * </span><span style="color:#d08770;">2 </span><span>+ </span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span>  </span><span style="color:#b48ead;">let</span><span> size_z = size_xy + </span><span style="color:#d08770;">1 </span><span>+ (</span><span style="color:#bf616a;">self</span><span>.random.</span><span style="color:#96b5b4;">next_u32</span><span>() % </span><span style="color:#d08770;">8</span><span>) as </span><span style="color:#b48ead;">usize</span><span>;</span><span>
+</span><span>  </span><span style="color:#65737e;">// Create an empty object that our tree will fit in</span><span>
+</span><span>  </span><span style="color:#b48ead;">let mut</span><span> tree = PregeneratedObject::solid(</span><span>
+</span><span>    size_xy,               </span><span style="color:#65737e;">// size_x</span><span>
+</span><span>    size_xy,               </span><span style="color:#65737e;">// size_y</span><span>
+</span><span>    size_z,                </span><span style="color:#65737e;">// size_z </span><span>
+</span><span>    Block::empty_block(),  </span><span style="color:#65737e;">// Block which the object is filled with initially</span><span>
+</span><span>    Block::log_block(),    </span><span style="color:#65737e;">// Foundation block</span><span>
+</span><span>  );</span><span>
+</span><span>  </span><span style="color:#65737e;">// The anchor is below the trunk (which is in the middle)</span><span>
+</span><span>  tree.anchor_x = size_xy / </span><span style="color:#d08770;">2</span><span>;</span><span>
+</span><span>  tree.anchor_y = size_xy / </span><span style="color:#d08770;">2</span><span>;</span><span>
+</span><span>  tree.anchor_z = </span><span style="color:#d08770;">1</span><span>; </span><span style="color:#65737e;">// Move the tree 1 block down </span><span>
+</span><span>  </span><span style="color:#65737e;">// Trees can stand close together or overlap, so lets keep existing blocks</span><span>
+</span><span>  tree.overwrite_non_empty = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span>  </span><span style="color:#65737e;">// Align with the soil</span><span>
+</span><span>  tree.place_on_soil = </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span>  </span><span style="color:#65737e;">// Create leaves. &quot;Spray&quot; means to randomly place 80% of blocks in a sphere</span><span>
+</span><span>  tree.</span><span style="color:#96b5b4;">spray_sphere</span><span>(</span><span>
+</span><span>    tree.anchor_x,</span><span>
+</span><span>    tree.anchor_y,</span><span>
+</span><span>    size_z - (radius + </span><span style="color:#d08770;">1</span><span>),</span><span>
+</span><span>    radius,</span><span>
+</span><span>    </span><span style="color:#d08770;">LEAVES_BLOCK</span><span>,</span><span>
+</span><span>    &amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>.random,</span><span>
+</span><span>  );</span><span>
+</span><span>  </span><span style="color:#65737e;">// Create the trunk</span><span>
+</span><span>  tree.</span><span style="color:#96b5b4;">set_filled_rectangle</span><span>(</span><span>
+</span><span>    tree.anchor_x,</span><span>
+</span><span>    tree.anchor_y,</span><span>
+</span><span>    </span><span style="color:#d08770;">0</span><span>,</span><span>
+</span><span>    tree.anchor_x + </span><span style="color:#d08770;">1</span><span>,</span><span>
+</span><span>    tree.anchor_y + </span><span style="color:#d08770;">1</span><span>,</span><span>
+</span><span>    size_z - (radius + </span><span style="color:#d08770;">1</span><span>),</span><span>
+</span><span>    Block::log_block(),</span><span>
+</span><span>  );</span><span>
+</span><span>  tree</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>The code used to generate tower objects can be found <a href="https://github.com/grunnt/yab-world/blob/master/server/src/generator/object_generator/tower_generator.rs">here</a>. This is a bit more involved as we want to place walls, crenelations, windows, a door, different floors, lights, etcetera. The anchor position is set to the door ground level, so it aligns nicely with the terrain level. It's fun to experiment with generating procedural objects, and not too difficult.</p>
+<h2 id="placing-objects">Placing objects</h2>
+<p>Placing these pregenerated objects in an infinite procedurally generated world is a tricky subject. I ended up doing the object placement immediately after generating an 1x1 column of terrain. The function signature for the object place code is similar to the one used by the terrain generator code (described in the previous post):</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub fn </span><span style="color:#8fa1b3;">place</span><span>(</span><span>
+</span><span>  &amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>,</span><span>
+</span><span>  </span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">i16</span><span>,  </span><span style="color:#65737e;">// X coordinate of 1x1 column to do object placement</span><span>
+</span><span>  </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">i16</span><span>,  </span><span style="color:#65737e;">// Y coordinate of 1x1 column to do object placement</span><span>
+</span><span>  </span><span style="color:#bf616a;">blocks</span><span>: &amp;</span><span style="color:#b48ead;">mut </span><span>Vec&lt;Block&gt;,  </span><span style="color:#65737e;">// Column of blocks containing the terrain</span><span>
+</span><span>  </span><span style="color:#bf616a;">generator</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> dyn Generator,  </span><span style="color:#65737e;">// Reference to the terrain generator</span><span>
+</span><span>)</span><span>
+</span></code></pre>
+<p>This way we do not need to worry about chunk boundaries and other exceptions as we treat every neighbouring block equally.</p>
+<p>One thing that stands out here is the <em>generator</em>. I quickly found out that in order to place objects on a sensible place in the terrain you need to know the terrain height at the location of the anchor (which is a tree root or bottom of a tower door). The anchor position should be aligned with the terrain at this point, so that the tree sits on the terrain and the door is accessible from ground level and not buried or high above the ground. </p>
+<p>To keep things simple, I added a function to each world generator that would supply 3 z coordinates: the highest rock, water and any block (including soil and water). This function can be much faster than the normal terrain generation as only the topmost blocks needs to be generated:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">determine_rock_water_top</span><span>(&amp;</span><span style="color:#b48ead;">mut </span><span style="color:#bf616a;">self</span><span>, </span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">i16</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">i16</span><span>) -&gt; (</span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#b48ead;">usize</span><span>)</span><span>
+</span></code></pre>
+<p>During object placement this function can be called for the anchor position to determine the terrain height at that location. This allows us to determine the height at which the object should be placed.</p>
+<h3 id="using-a-grid-for-object-locations">Using a grid for object locations</h3>
+<p>A problem which I have not discussed yet is <em>where</em> to place the objects. Ideally the objects should be distributed in a natural looking manner and should not overlap. And we should be able to quickly determine the location of any objects overlapping with the current column of blocks. </p>
+<p>To do this I started out with a grid (as seen from above) in which each cell of the grid contains an object:</p>
+<img src="/yab-world-objects/regular-grid.svg" alt="Regular object grid" width="512"/>
+<p>This is of course much too regular to be interesting: trees are normally not lined up this way unless they're planted by a machine. Making this grid irregular is quite easy, however. We can use value noise to determine a random location of the anchor in the cell. Using seeded value noise ensures that the position is random and that the object position will be the same for a grid cell each time we calculate it:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">// Determine the cell top-left coordinate (these are i16 values)</span><span>
+</span><span style="color:#b48ead;">let</span><span> grid_x = (x / </span><span style="color:#bf616a;">self</span><span>.grid_size) * </span><span style="color:#bf616a;">self</span><span>.grid_size;</span><span>
+</span><span style="color:#b48ead;">let</span><span> grid_y = (y / </span><span style="color:#bf616a;">self</span><span>.grid_size) * </span><span style="color:#bf616a;">self</span><span>.grid_size;</span><span>
+</span><span style="color:#65737e;">// Get position of anchor in the cell</span><span>
+</span><span style="color:#b48ead;">let</span><span> anchor_world_x = grid_x </span><span>
+</span><span>    + (</span><span style="color:#bf616a;">self</span><span>.grid_x_noise.</span><span style="color:#96b5b4;">get</span><span>([x as </span><span style="color:#b48ead;">f64</span><span>, y as </span><span style="color:#b48ead;">f64</span><span>]) * </span><span style="color:#d08770;">0.5 </span><span>+ </span><span style="color:#d08770;">0.5</span><span>) * </span><span style="color:#bf616a;">self</span><span>.grid_size;</span><span>
+</span><span style="color:#b48ead;">let</span><span> anchor_world_y = grid_y </span><span>
+</span><span>    + (</span><span style="color:#bf616a;">self</span><span>.grid_y_noise.</span><span style="color:#96b5b4;">get</span><span>([x as </span><span style="color:#b48ead;">f64</span><span>, y as </span><span style="color:#b48ead;">f64</span><span>]) * </span><span style="color:#d08770;">0.5 </span><span>+ </span><span style="color:#d08770;">0.5</span><span>) * </span><span style="color:#bf616a;">self</span><span>.grid_size;</span><span>
+</span></code></pre>
+<p>We get a much nicer distorted grid using this approach:</p>
+<img src="/yab-world-objects/distorted-grid.svg" alt="Regular object grid" width="512"/>
+<p>However, if we use this in YAB-World we get something that looks funny, somewhat natural but not really realistic:</p>
+<p><img src="/yab-world-objects/distorted-grid-screenshot.jpg" alt="Distorted grid with objects" /></p>
+<p>Note that I used a larger grid size for the larger tower objects, so they are spaced further apart. Also, I allowed the trees to overlap a bit, which helps the natural look, but obviously this was not possible for the towers.</p>
+<p>The reason that this looks wrong is that each and every cell contains an object. To improve on this we need to generate a <em>density</em> value using (again) FBM noise. Noise really is a terrain generator's best friend!</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">// Determine object density at the anchor position</span><span>
+</span><span style="color:#b48ead;">let</span><span> density_noise = </span><span style="color:#bf616a;">self</span><span>.fbm_density_noise</span><span>
+</span><span>        .</span><span style="color:#96b5b4;">get</span><span>(anchor_world_x, anchor_world_y, </span><span style="color:#d08770;">0.01</span><span>);</span><span>
+</span><span style="color:#65737e;">// If the density is below some tweakable value</span><span>
+</span><span style="color:#b48ead;">if</span><span> density_noise &gt; </span><span style="color:#bf616a;">self</span><span>.object_density {</span><span>
+</span><span>    </span><span style="color:#65737e;">// Place no object, so return without doing anything</span><span>
+</span><span>    </span><span style="color:#b48ead;">return</span><span>;</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>By &quot;filtering&quot; the grid using the FBM noise we get a much better result:</p>
+<p><img src="/yab-world-objects/distorted-filtered-grid-screenshot.jpg" alt="Distorted filtered grid with objects" /></p>
+<p>We can tweak object placement by varying grid size and object density, and some other values. This allowed me to use a completely different distribution for the towers and trees. </p>
+<p>Of course there is more to the object generation and placement than I explained here. To learn more you can look at the full object placement code which can be found <a href="https://github.com/grunnt/yab-world/blob/master/server/src/generator/object_placer/mod.rs">here</a>. </p>
+
+
+            </div>
+        </section>
+    </div>
+    <footer>
+        © 2022 Bas van Schoonhoven. Made using <a href="https://www.getzola.org" target="_blank">Zola</a>.
+    </footer>
+</body>
+
+</html>

@@ -6,7 +6,7 @@ date = 2021-12-10
 blog_icon = "/yab-world/screenshot.png"
 +++
 
-Yet Another Block-World is a prototype infinite fully editable world for multiple players.
+Yet Another Block-World is a prototype infinite fully editable world for multiple players. It is not by any means a finished game, but can be a fun toy to fool around with.
 
 ![Screenshot](/yab-world/screenshot.png)
 
@@ -57,3 +57,4 @@ It is written in [Rust](https://www.rust-lang.org). I make extensive use of thre
 
 Read more about the development of YAB-World:
 - [YAB-World procedural generation](/blog/yab-world-generation)
+- [YAB-World procedural objects](/blog/yab-world-objects)

@@ -87,6 +87,11 @@ h2 {
     color: $h-color;
 }
 
+h3 {
+    font-size: 1.2em;
+    color: $h-color;
+}
+
 header {
     position: fixed;
     top: 0px;
@@ -139,7 +144,7 @@ section h1, section h2, section h3 {
     text-align: left;
 }
 
-section ul {
+section ul, section ol {
     padding-left: 1rem;
     margin-bottom: 1rem;
     margin-top: 0.5rem;
@@ -177,6 +182,7 @@ footer {
 
 .blog-list {
     padding-left: 0px;
+    margin-top: 1.5rem;
 }
 
 .blog-summary {
@@ -201,6 +207,7 @@ form {
 
 form input, form textarea {
     width: 100%;
+    padding: 3px 6px;
 }
 
 form textarea {

@@ -1,12 +1,12 @@
 +++
 title = "YAB-World procedural generation"
-description = "Procedural world generation in YAB-World."
+description = "Generating natural looking terrain in a block world."
 date = 2022-01-19
 [extra]
 blog_icon = "/yab-world-generation/terrain-generation.jpg"
 +++
 
-Yet Another Block-World is a prototype infinite fully editable world for multiple players. You can read more about it [here](/blog/yab-world). On this page I will explain a bit more about the procedural world generation I used.
+[Yet Another Block-World](/blog/yab-world) is a prototype infinite fully editable world for multiple players. On this page I will explain a bit more about the procedural world generation I used.
 
 The code is open source and available on [GitHub](https://github.com/grunnt/yab-world) (MIT License). The full world generator code can be found [here](https://github.com/grunnt/yab-world/tree/master/server/src/generator/generators) in the server crate.
 
@@ -340,6 +340,8 @@ Using this code lets us place nice small clumps of resource to discover by diggi
 ![Resource placement](/yab-world-generation/resources.jpg)
 
 ## Further steps
+
+I wrote an article about the procedural objects in YAB-World which you can read [here](/blog/yab-world-objects).
 
 Placing water is quite easy: just place water at any block below water level that is empty. The soil at or below water level (and perhaps 1 or 2 blocks above) can be made sand to give an impression of beaches. This means that the water level will be the same everywhere. Unfortunately in an infinite world like this somethings are prohibitively difficult, and having varying water levels is one of them.
 
