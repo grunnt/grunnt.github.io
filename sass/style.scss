@@ -76,7 +76,7 @@ html {
 }
 
 h1 {
-    font-size: 2em;
+    font-size: 1.8em;
     color: $h-color;
 }
 
@@ -91,11 +91,20 @@ h3 {
 }
 
 header {
-    font-size: 1.5em;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin-left:auto;
+    margin-right:auto;
     z-index: 1;
+    font-size: 1.5em;
     white-space: nowrap;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: hidden;
+    width: $column-width;
+    background-color: #232937;
+    padding: 0.5em 0em;
 }
 
 #logo {
@@ -119,7 +128,7 @@ nav li {
     float: left;
 }
 
-#center-column, header, footer {
+#center-column, footer {
     max-width: $column-width;
     margin: 0 auto;
 }
@@ -135,6 +144,7 @@ section {
     padding: 20px;
     background-color: $back-color-dark;
     text-align: justify;
+    border-radius: 0.5em;
 }
 
 section h1, section h2, section h3 {
@@ -158,6 +168,7 @@ section code {
 
 section img {
     max-width: 100%;
+    border-radius: 0.5em;
 }
 
 section pre.language-rust {
@@ -181,9 +192,19 @@ footer {
     margin-top: 1.5rem;
 }
 
+.blog-list li {
+    white-space: nowrap;
+    background-color: #272c37;
+    padding: 0.5em;
+    margin: 1em 0 0 0;
+    list-style: none;
+    overflow: hidden;
+    border-radius: 0.5em;
+}
+
 .blog-summary {
     display: inline-block;
-    padding-left: 1.5em;
+    padding-left: 0.5em;
     vertical-align: top;
     margin-top: 0;
 }
@@ -195,6 +216,8 @@ footer {
 .blog-list img {
     width: 200px;
     height: auto;
+    border-radius: 0.5em;
+    border: solid #e0ecdc 2px;
 }
 
 form {
@@ -215,4 +238,16 @@ form button {
     font-family: inherit;
     padding: 1px 7px;
     margin-top: 0.5rem;
+}
+
+@media screen and (max-width: 1024px) {
+  header, #center-column {
+    width: 800px;
+  }
+}
+
+@media screen and (max-width: 800px) {
+  header, #center-column {
+    width: 600px;
+  }
 }

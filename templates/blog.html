@@ -6,7 +6,7 @@
 </h1>
 <ul class="blog-list">
     {% for page in section.pages %}
-    <div>
+    <li>
         {% if page.extra.blog_icon %}
         <a href="{{ page.permalink | safe }}"><img src="{{ page.extra.blog_icon }}" alt="Blog post icon"
                 height="160" /></a>
@@ -18,7 +18,7 @@
             {% endif %}
             <a href="{{ page.permalink | safe }}">Read more</a>
         </div>
-    </div>
+    </li>
     {% endfor %}
 </ul>
 
