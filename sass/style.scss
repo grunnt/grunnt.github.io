@@ -1,16 +1,16 @@
 // Globals
 $baseline: 1.5rem;
 $column-width: 1024px;
-$header-height: 3em;
-$footer-height: 2.5em;
+$header-height: 1.5em;
+$footer-height: 1.5em;
 
-$header-color: #FFF;
-$text-color: #3c3c3c;
-$h-color: #282828;
+$text-color: #E4E9EE;
+$h-color: #E0ECDC;
 $light-text-color: rgb(73, 73, 70);
 $color-three: #668449;
-$background-color: #F7F5F3;
-$foreground-color: #FFF;
+
+$back-color-light: #232937;
+$back-color-dark: #1C212D;
 
 // CSS reset
 * {
@@ -23,7 +23,7 @@ $foreground-color: #FFF;
 }
 
 html {
-    font-size: 140%;
+    font-size: 18px;
     -ms-text-size-adjust: 100%;
     -webkit-text-size-adjust: 100%;
     -moz-osx-font-smoothing: grayscale;
@@ -42,13 +42,12 @@ br, audio, br, nav, nav ul , li {
 }
 
 // Typography
-@font-face {
-  font-family: Roboto;
-  src: url(Roboto-Regular.ttf);
+html {
+    font-family: Cambria, Georgia, serif;
 }
 
 a {
-  color: $color-three;
+  color: #c3e6a2;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.15em;
   text-decoration-color: $text-color;
@@ -57,7 +56,7 @@ a {
 }
 
 a:hover {
-  color: #9bd068;
+  color: #7a9461;
   opacity: 1;
   text-decoration-color: inherit;
 }
@@ -72,8 +71,7 @@ body {
 }
 
 html {
-    background-color:$background-color;
-    font-family: Roboto, Arial, Helvetica, sans-serif;
+    background-color: $back-color-light;
     line-height: 1.5em;
 }
 
@@ -93,12 +91,7 @@ h3 {
 }
 
 header {
-    position: fixed;
-    top: 0px;
-    width: 100%;
-    height: 2.5em;
-    line-height: 2.5em;
-    background: #fff;
+    font-size: 1.5em;
     z-index: 1;
     white-space: nowrap;
     overflow-x: auto;
@@ -126,9 +119,12 @@ nav li {
     float: left;
 }
 
-#center-column {
+#center-column, header, footer {
     max-width: $column-width;
     margin: 0 auto;
+}
+
+#center-column {
     position: relative;
     height: 100%;
     padding-top: $header-height;
@@ -136,7 +132,8 @@ nav li {
 }
 
 section {
-    padding: 10px 30px 20px 30px;
+    padding: 20px;
+    background-color: $back-color-dark;
     text-align: justify;
 }
 
@@ -176,7 +173,6 @@ section pre.language-rust * + * {
 footer {
     width: 100%;
     line-height: 2.5em;
-    background: #CDDF8B;
     text-align: center;
 }
 
