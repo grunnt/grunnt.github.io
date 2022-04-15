@@ -10,6 +10,8 @@ After seeing the falling sand simulator [Sandspiel](https://sandspiel.club), alo
 
 On this page I describe my own falling-sand toy, written using Rust, Bevy and egui. It's a 2D sandbox that is simulating a simplified form of physics.
 
+<!-- more -->
+
 ![Screenshot](/falling-rust/screenshot.png)
 
 ## How to run

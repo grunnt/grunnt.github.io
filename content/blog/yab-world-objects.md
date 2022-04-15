@@ -8,6 +8,8 @@ blog_icon = "/yab-world-objects/yab-world-objects.jpg"
 
 [Yet Another Block-World](/blog/yab-world) is a prototype infinite fully editable world for multiple players. On this page I will explain a bit more about the way the procedural objects are generated and placed. I will assume that you have read the earlier article about [world generation](/blog/yab-world-generation).
 
+<!-- more -->
+
 The code is open source and available on [GitHub](https://github.com/grunnt/yab-world) (MIT License). The code for generating objects can be found [here](https://github.com/grunnt/yab-world/tree/master/server/src/generator/object_generator) in the server crate. The code for placing the objects can be found [here](https://github.com/grunnt/yab-world/tree/master/server/src/generator/object_placer).
 
 # The objects

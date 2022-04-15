@@ -8,6 +8,8 @@ blog_icon = "/yab-world-generation/terrain-generation.jpg"
 
 [Yet Another Block-World](/blog/yab-world) is a prototype infinite fully editable world for multiple players. On this page I will explain a bit more about the procedural world generation I used.
 
+<!-- more -->
+
 The code is open source and available on [GitHub](https://github.com/grunnt/yab-world) (MIT License). The full world generator code can be found [here](https://github.com/grunnt/yab-world/tree/master/server/src/generator/generators) in the server crate.
 
 # The terrain

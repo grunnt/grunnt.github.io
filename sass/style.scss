@@ -128,6 +128,10 @@ nav li {
     float: left;
 }
 
+hr {
+    color: #566a43;
+}
+
 #center-column, footer {
     max-width: $column-width;
     margin: 0 auto;
@@ -193,7 +197,6 @@ footer {
 }
 
 .blog-list li {
-    white-space: nowrap;
     background-color: #272c37;
     padding: 0.5em;
     margin: 1em 0 0 0;
@@ -202,14 +205,21 @@ footer {
     border-radius: 0.5em;
 }
 
-.blog-summary {
+.read-more {
+
+}
+
+.blog-tile {
     display: inline-block;
-    padding-left: 0.5em;
     vertical-align: top;
+}
+
+.blog-description {
+    display: inline-block;
     margin-top: 0;
 }
 
-.blog-summary p {
+.blog-tile p {
     margin-top: 0.5rem;
 }
 
@@ -218,6 +228,10 @@ footer {
     height: auto;
     border-radius: 0.5em;
     border: solid #e0ecdc 2px;
+}
+
+a.back-to-top {
+    font-size: 0.8em;
 }
 
 form {
@@ -240,14 +254,6 @@ form button {
     margin-top: 0.5rem;
 }
 
-@media screen and (max-width: 1024px) {
-  header, #center-column {
-    width: 800px;
-  }
-}
-
-@media screen and (max-width: 800px) {
-  header, #center-column {
-    width: 600px;
-  }
+header, #center-column {
+    max-width: 1024px;
 }

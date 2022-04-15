@@ -19,6 +19,7 @@
             </ul>
         </nav>
     </header>
+    <a name="top"></a>
     <div id="center-column">
         <section>
             <div>
@@ -28,6 +29,7 @@
 </h1>
 <p class="subtitle"><strong>2022-02-07</strong></p>
 <p><a href="/blog/yab-world">Yet Another Block-World</a> is a prototype infinite fully editable world for multiple players. On this page I will explain a bit more about the way the procedural objects are generated and placed. I will assume that you have read the earlier article about <a href="/blog/yab-world-generation">world generation</a>.</p>
+<span id="continue-reading"></span>
 <p>The code is open source and available on <a href="https://github.com/grunnt/yab-world">GitHub</a> (MIT License). The code for generating objects can be found <a href="https://github.com/grunnt/yab-world/tree/master/server/src/generator/object_generator">here</a> in the server crate. The code for placing the objects can be found <a href="https://github.com/grunnt/yab-world/tree/master/server/src/generator/object_placer">here</a>.</p>
 <h1 id="the-objects">The objects</h1>
 <p><img src="/yab-world-objects/yab-world-objects.jpg" alt="Objects in YAB-World" /></p>
@@ -158,6 +160,8 @@
 <p>We can tweak object placement by varying grid size and object density, and some other values. This allowed me to use a completely different distribution for the towers and trees. </p>
 <p>Of course there is more to the object generation and placement than I explained here. To learn more you can look at the full object placement code which can be found <a href="https://github.com/grunnt/yab-world/blob/master/server/src/generator/object_placer/mod.rs">here</a>. </p>
 
+<hr />
+<a class="back-to-top" href="#top">Back to top</a>
 
             </div>
         </section>

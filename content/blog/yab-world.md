@@ -8,6 +8,8 @@ blog_icon = "/yab-world/screenshot.png"
 
 Yet Another Block-World is a prototype infinite fully editable world for multiple players. It is not by any means a finished game, but can be a fun toy to fool around with.
 
+<!-- more -->
+
 ![Screenshot](/yab-world/screenshot.png)
 
 # How to run
