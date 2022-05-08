@@ -145,7 +145,7 @@
 <p>However, if we use this in YAB-World we get something that looks funny, somewhat natural but not really realistic:</p>
 <p><img src="/yab-world-objects/distorted-grid-screenshot.jpg" alt="Distorted grid with objects" /></p>
 <p>Note that I used a larger grid size for the larger tower objects, so they are spaced further apart. Also, I allowed the trees to overlap a bit, which helps the natural look, but obviously this was not possible for the towers.</p>
-<p>The reason that this looks wrong is that each and every cell contains an object. To improve on this we need to generate a <em>density</em> value using (again) FBM noise. Noise really is a terrain generator's best friend!</p>
+<p>The reason that this looks wrong is that each and every cell contains an object. To improve on this we need to generate a <em>density</em> value using (again) FBM noise:</p>
 <pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">// Determine object density at the anchor position</span><span>
 </span><span style="color:#b48ead;">let</span><span> density_noise = </span><span style="color:#bf616a;">self</span><span>.fbm_density_noise</span><span>
 </span><span>        .</span><span style="color:#96b5b4;">get</span><span>(anchor_world_x, anchor_world_y, </span><span style="color:#d08770;">0.01</span><span>);</span><span>

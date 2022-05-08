@@ -166,7 +166,7 @@ However, if we use this in YAB-World we get something that looks funny, somewhat
 
 Note that I used a larger grid size for the larger tower objects, so they are spaced further apart. Also, I allowed the trees to overlap a bit, which helps the natural look, but obviously this was not possible for the towers.
 
-The reason that this looks wrong is that each and every cell contains an object. To improve on this we need to generate a *density* value using (again) FBM noise. Noise really is a terrain generator's best friend!
+The reason that this looks wrong is that each and every cell contains an object. To improve on this we need to generate a *density* value using (again) FBM noise:
 
 ```rust
 // Determine object density at the anchor position

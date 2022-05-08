@@ -294,7 +294,7 @@ impl TerrainGenerator {
 }
 ```
 
-The constant values in the code (e.g. roughness or terrain min and max z) require a quite a lot of trial-and-error before it looks good. Most values result in either dull or completely crazy landscapes. Procedural world generation is more like engineering than science :-)
+The constant values in the code (e.g. roughness or terrain min and max z) determine what the terrain looks like. Most values result in either dull or completely crazy landscapes, buth with some tweaking it should work:
 
 ![Resulting terrain](/yab-world-generation/terrain-generation.jpg)
 
@@ -345,6 +345,6 @@ Using this code lets us place nice small clumps of resource to discover by diggi
 
 I wrote an article about the procedural objects in YAB-World which you can read [here](/blog/yab-world-objects).
 
-Placing water is quite easy: just place water at any block below water level that is empty. The soil at or below water level (and perhaps 1 or 2 blocks above) can be made sand to give an impression of beaches. This means that the water level will be the same everywhere. Unfortunately in an infinite world like this somethings are prohibitively difficult, and having varying water levels is one of them.
+Placing water is quite easy: just place water at any block below water level that is empty. The soil at or below water level (and perhaps 1 or 2 blocks above) can be made sand to give an impression of beaches. This means that the water level will be the same everywhere. Unfortunately in an infinite world like this some things are prohibitively difficult, and having varying water levels is one of them.
 
 Another addition would be supporting different biomes. I experimented with different approaches to generate biomes, including voronoi diagrams and "emergent" generation based on temperature, humidity and other values. Voronoi diagrams are relatively easy to generate, but creating different biomes based on the diagrams and especially generating convincing transitions between biomes is a difficult task. Maybe something for another time!

@@ -263,7 +263,7 @@
 </span><span>  }</span><span>
 </span><span>}</span><span>
 </span></code></pre>
-<p>The constant values in the code (e.g. roughness or terrain min and max z) require a quite a lot of trial-and-error before it looks good. Most values result in either dull or completely crazy landscapes. Procedural world generation is more like engineering than science :-)</p>
+<p>The constant values in the code (e.g. roughness or terrain min and max z) determine what the terrain looks like. Most values result in either dull or completely crazy landscapes, buth with some tweaking it should work:</p>
 <p><img src="/yab-world-generation/terrain-generation.jpg" alt="Resulting terrain" /></p>
 <p>This gives a nice and interesting terrain with overhangs and cliffs, pretty similar to how Minecraft terrain was originally generated. One artefact that can occur is &quot;floating islands&quot;: small clumps of blocks that are not attached to the terrain but float in the air, something you will be familiar with if you have played Minecraft. By increasing terrain roughness the chance of these floating islands occurring will also increase. </p>
 <p><img src="/yab-world-generation/floating-island.jpg" alt="Floating islands" /></p>
@@ -302,7 +302,7 @@
 <p><img src="/yab-world-generation/resources.jpg" alt="Resource placement" /></p>
 <h2 id="further-steps">Further steps</h2>
 <p>I wrote an article about the procedural objects in YAB-World which you can read <a href="/blog/yab-world-objects">here</a>.</p>
-<p>Placing water is quite easy: just place water at any block below water level that is empty. The soil at or below water level (and perhaps 1 or 2 blocks above) can be made sand to give an impression of beaches. This means that the water level will be the same everywhere. Unfortunately in an infinite world like this somethings are prohibitively difficult, and having varying water levels is one of them.</p>
+<p>Placing water is quite easy: just place water at any block below water level that is empty. The soil at or below water level (and perhaps 1 or 2 blocks above) can be made sand to give an impression of beaches. This means that the water level will be the same everywhere. Unfortunately in an infinite world like this some things are prohibitively difficult, and having varying water levels is one of them.</p>
 <p>Another addition would be supporting different biomes. I experimented with different approaches to generate biomes, including voronoi diagrams and &quot;emergent&quot; generation based on temperature, humidity and other values. Voronoi diagrams are relatively easy to generate, but creating different biomes based on the diagrams and especially generating convincing transitions between biomes is a difficult task. Maybe something for another time!</p>
 
 <hr />
