@@ -4,36 +4,39 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>Bas Blog About Code</title>
+    <title>BasvS.dev</title>
     <link rel="stylesheet" type="text/css" href="/style.css" />
 </head>
 
-<body>
+<body class="base-page">
+    <a name="top"></a>
     <header>
-        <div id="logo">Bas</div>
+        <div class="photo-frame">
+            <a href="/" title="Back home"><img src="/bas.png" alt="Photo of Bas" style="border-radius: 50%;"
+                    width="64"></a>
+        </div>
         <nav>
-            <ul>
-                <li><a href="/blog">Blog</a></li>
-                <li><a href="/">About</a></li>
-                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">Code (GitHub)</a></li>
+            <ul class="nav-links">
+                <li><a href="/blog">BLOG</a></li>
+                <li><a href="/projects">PROJECTS</a></li>
+                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">CODE</a></li>
+                <li><a href="/about">ABOUT ME</a></li>
+                <li><a href="/contact">CONTACT</a></li>
             </ul>
+            <div class="horizontal-line"></div>
         </nav>
     </header>
-    <a name="top"></a>
-    <div id="center-column">
-        <section>
-            <div>
-                
-<h1 class="title">
-    YAB-World procedural generation
-</h1>
-<p class="subtitle"><strong>2022-01-19</strong></p>
-<p><a href="/blog/yab-world">Yet Another Block-World</a> is a prototype infinite fully editable world for multiple players. On this page I will explain a bit more about the procedural world generation I used.</p>
-<span id="continue-reading"></span>
-<p>The code is open source and available on <a href="https://github.com/grunnt/yab-world">GitHub</a> (MIT License). The full world generator code can be found <a href="https://github.com/grunnt/yab-world/tree/master/server/src/generator/generators">here</a> in the server crate.</p>
-<h1 id="the-terrain">The terrain</h1>
+    <div class="center-column">
+        
+<section>
+    <h1 class="title">
+        Infinite procedural terrain
+    </h1>
+    <p class="subtitle"><em>2022-01-19</em></p>
+    <p><a href="/projects/yab-world">Yet Another Block-World</a> is a block world toy I made. It is (nearly) infinite, fully editable and supports multiplayer. It is not by any means a finished game but it works and can be fun to play with. The code is open source and available on <a href="https://github.com/grunnt/yab-world">GitHub</a> (MIT License). The full world generator code can be found <a href="https://github.com/grunnt/yab-world/tree/master/server/src/generator/generators">here</a> in the server crate. </p>
+<h1 id="procedural-terrain">Procedural terrain</h1>
 <p><img src="/yab-world-generation/terrain-generation.jpg" alt="Resulting terrain" /></p>
-<p>A procedure for generating terrain for an infinite block-world needs to generate interesting terrain over a nearly infinite area. It should be quite fast as well, as we need to generate terrain in real-time.</p>
+<p>A procedure for generating terrain for an infinite block-world needs to generate interesting terrain over a nearly infinite area. It should be quite fast as well, as we need to generate terrain in real-time. &quot;Interesting&quot; terrain in this case means that it is varied and supports cliffs and overhangs.</p>
 <h2 id="blocks-and-chunks">Blocks and chunks</h2>
 <p>But first I'll talk a bit about the data model used to store the world. A block world is built out of, well, blocks. Each block is stored as an integer number, e.g. 0 = empty space, 1 = rock, 2 = dirt, etc. For a good looking result you minimally need rock and some kind of soil, e.g. desert sand or dirt with grass on top. </p>
 <p>We can't generate an infinite world in one go, so we need to cut it up in small pieces, and generate it piece by piece. Like most block-world implementations I divide the world into chunks. A chunk is a 3D array of blocks, although I store it as a flat array since this speeds up iteration over the array somewhat. </p>
@@ -305,11 +308,9 @@
 <p>Placing water is quite easy: just place water at any block below water level that is empty. The soil at or below water level (and perhaps 1 or 2 blocks above) can be made sand to give an impression of beaches. This means that the water level will be the same everywhere. Unfortunately in an infinite world like this some things are prohibitively difficult, and having varying water levels is one of them.</p>
 <p>Another addition would be supporting different biomes. I experimented with different approaches to generate biomes, including voronoi diagrams and &quot;emergent&quot; generation based on temperature, humidity and other values. Voronoi diagrams are relatively easy to generate, but creating different biomes based on the diagrams and especially generating convincing transitions between biomes is a difficult task. Maybe something for another time!</p>
 
-<hr />
-<a class="back-to-top" href="#top">Back to top</a>
+    <a class="back-to-top" href="#top">Back to top</a>
+</section>
 
-            </div>
-        </section>
     </div>
     <footer>
         © 2022 Bas van Schoonhoven

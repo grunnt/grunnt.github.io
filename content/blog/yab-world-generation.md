@@ -1,22 +1,18 @@
 +++
-title = "YAB-World procedural generation"
-description = "Generating natural looking terrain in a block world."
+title = "Infinite procedural terrain"
+description = "How to generate interesting terrain for an infinite block world?"
 date = 2022-01-19
 [extra]
-blog_icon = "/yab-world-generation/terrain-generation.jpg"
+blog_icon = "/yab-world-generation/floating-island.jpg"
 +++
 
-[Yet Another Block-World](/blog/yab-world) is a prototype infinite fully editable world for multiple players. On this page I will explain a bit more about the procedural world generation I used.
+[Yet Another Block-World](/projects/yab-world) is a block world toy I made. It is (nearly) infinite, fully editable and supports multiplayer. It is not by any means a finished game but it works and can be fun to play with. The code is open source and available on [GitHub](https://github.com/grunnt/yab-world) (MIT License). The full world generator code can be found [here](https://github.com/grunnt/yab-world/tree/master/server/src/generator/generators) in the server crate. 
 
-<!-- more -->
-
-The code is open source and available on [GitHub](https://github.com/grunnt/yab-world) (MIT License). The full world generator code can be found [here](https://github.com/grunnt/yab-world/tree/master/server/src/generator/generators) in the server crate.
-
-# The terrain
+# Procedural terrain
 
 ![Resulting terrain](/yab-world-generation/terrain-generation.jpg)
 
-A procedure for generating terrain for an infinite block-world needs to generate interesting terrain over a nearly infinite area. It should be quite fast as well, as we need to generate terrain in real-time.
+A procedure for generating terrain for an infinite block-world needs to generate interesting terrain over a nearly infinite area. It should be quite fast as well, as we need to generate terrain in real-time. "Interesting" terrain in this case means that it is varied and supports cliffs and overhangs.
 
 ## Blocks and chunks
 

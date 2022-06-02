@@ -4,31 +4,36 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-    <title>Bas Blog About Code</title>
+    <title>BasvS.dev</title>
     <link rel="stylesheet" type="text/css" href="/style.css" />
 </head>
 
-<body>
+<body class="base-page">
+    <a name="top"></a>
     <header>
-        <div id="logo">Bas</div>
+        <div class="photo-frame">
+            <a href="/" title="Back home"><img src="/bas.png" alt="Photo of Bas" style="border-radius: 50%;"
+                    width="64"></a>
+        </div>
         <nav>
-            <ul>
-                <li><a href="/blog">Blog</a></li>
-                <li><a href="/">About</a></li>
-                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">Code (GitHub)</a></li>
+            <ul class="nav-links">
+                <li><a href="/blog">BLOG</a></li>
+                <li><a href="/projects">PROJECTS</a></li>
+                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">CODE</a></li>
+                <li><a href="/about">ABOUT ME</a></li>
+                <li><a href="/contact">CONTACT</a></li>
             </ul>
+            <div class="horizontal-line"></div>
         </nav>
     </header>
-    <a name="top"></a>
-    <div id="center-column">
-        <section>
-            <div>
-                
-<h1 class="title">
-    Falling Rust
-</h1>
-<p class="subtitle"><strong>2021-11-16</strong></p>
-<p>After seeing the falling sand simulator <a href="https://sandspiel.club">Sandspiel</a>, along with the accompanying <a href="https://maxbittker.com/making-sandspiel">&quot;Making sandspiel&quot; article</a>, I just had to make one of my own! I'm fascinated by how a set of simple rules can result in such complex behaviour.</p>
+    <div class="center-column">
+        
+<section>
+    <h1 class="title">
+        Falling Rust
+    </h1>
+    <p class="subtitle"><em>2021-11-16</em></p>
+    <p>After seeing the falling sand simulator <a href="https://sandspiel.club">Sandspiel</a>, along with the accompanying <a href="https://maxbittker.com/making-sandspiel">&quot;Making sandspiel&quot; article</a>, I just had to make one of my own! I'm fascinated by how a set of simple rules can result in such complex behaviour.</p>
 <p>On this page I describe my own falling-sand toy, written using Rust, Bevy and egui. It's a 2D sandbox that is simulating a simplified form of physics.</p>
 <span id="continue-reading"></span>
 <p><img src="/falling-rust/screenshot.png" alt="Screenshot" /></p>
@@ -71,11 +76,9 @@
 <h2 id="the-code">The code</h2>
 <p>The code is open source and available on <a href="https://github.com/grunnt/falling-rust">GitHub</a> (MIT License).</p>
 
-<hr />
-<a class="back-to-top" href="#top">Back to top</a>
+    <a class="back-to-top" href="#top">Back to top</a>
+</section>
 
-            </div>
-        </section>
     </div>
     <footer>
         © 2022 Bas van Schoonhoven

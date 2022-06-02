@@ -4,26 +4,25 @@
 <h1 class="title">
     {{ section.title }}
 </h1>
-<ul class="blog-list">
+<div class="blog-list">
     {% for page in section.pages %}
-    <li>
+    <div class="blog-tile">
         <h2>{{ page.title }}</h2>
-        <div class="blog-tile">
-            <div class="blog-icon">
-                {% if page.extra.blog_icon %}
-                <a href="{{ page.permalink | safe }}"><img src="{{ page.extra.blog_icon }}" alt="Blog post icon"
-                        height="160" /></a>
-                {% endif %}
-            </div>
-            <div class="blog-description">
-                {% if page.summary %}
-                {{ page.summary | safe }}
-                {% endif %}
-                <p><a href="{{ page.permalink | safe }}">Read more</a></p>
-            </div>
+        <div class="blog-date">{{ page.date }}</div>
+        <div class="blog-icon">
+            {% if page.extra.blog_icon %}
+            <a href="{{ page.permalink | safe }}"><img src="{{ page.extra.blog_icon }}" alt="Blog post icon"
+                    height="160" /></a>
+            {% endif %}
         </div>
-    </li>
+        <div class="blog-description">
+            {% if page.description %}
+            {{ page.description | safe }}
+            {% endif %}
+            <p><a href="{{ page.permalink | safe }}">Read more</a></p>
+        </div>
+    </div>
     {% endfor %}
-</ul>
+</div>
 
 {% endblock content %}

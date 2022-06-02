@@ -1,20 +1,33 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block content %}
-<p><img src="/bas.png" alt="Photo of Bas" style="border-radius: 50%;" width="128">
-    Welcome to my personal website. My name is Bas van Schoonhoven. I live in the Netherlands and work as a senior
-    software developer at <a href="https://www.oclc.org">OCLC</a>. Previously I have done technical and policy research
-    at <a href="https://www.tno.nl/en/focus-areas/information-communication-technology">TNO ICT</a>, and worked as a
-    software developer at <a href="https://www.de-ree.nl">DE REE Archiefsystemen</a>.</p>
-<p>Professionally I mostly do Java and MySQL backend development with some front-end work mixed in. I like fixing
-    unfixable bugs and turning complex problems into elegant, simple solutions. As a hobby I create prototypes and toys
-    using Rust, Java and OpenGL and sometimes other languages and frameworks.</p>
-<p>This site acts as a portfolio and as a place for sharing things that interest me in my <a href="/blog">Blog</a>.</p>
-<p>Feel free to contact me using the form below:</p>
-<form action="https://formspree.io/f/xbjwdayz" method="POST">
-    <label>Your e-mail:<input type="email" name="_replyto"></label><br />
-    <label>Your message:<textarea name="message"></textarea></label><br />
-    <button type="submit">Send</button>
-</form>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>Bas Blog About Code</title>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+</head>
 
-{% endblock content %}
+<body class="home-page">
+    <div class="center-column">
+        <div class="photo-frame">
+            <img src="/bas.png" alt="Photo of Bas" style="border-radius: 50%;" width="128">
+        </div>
+        <div>
+            <h1>Hi, I am Bas</h1>
+            <p>Welcome to my personal website.</p>
+            <div class="horizontal-line"></div>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/blog">BLOG</a></li>
+                    <li><a href="/projects">PROJECTS</a></li>
+                    <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">CODE</a></li>
+                    <li><a href="/about">ABOUT ME</a></li>
+                    <li><a href="/contact">CONTACT</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</body>
+
+</html>

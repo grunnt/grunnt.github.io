@@ -1,6 +1,6 @@
 +++
-title = "YAB-World procedural objects"
-description = "Placing procedural objects in a block world."
+title = "Procedural objects"
+description = "Generating and placing procedural objects in an infinite block world."
 date = 2022-02-07
 [extra]
 blog_icon = "/yab-world-objects/yab-world-objects.jpg"
