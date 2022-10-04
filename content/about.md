@@ -18,7 +18,7 @@ This site acts as a portfolio and as a place for sharing things that interest me
 
 # Experience
 
-I have about 12 years of experience working as a software engineer in a variety of settings and roles, and I have experience working with a wide range of languages, frameworks and technologies. My main focus professionally is Java, Spring and MySQL, but I am always happy to learn something new.
+I have about 12 years of experience working as a software engineer in a variety of settings and roles, and I have experience working with a wide range of languages, frameworks and technologies. My main focus professionally is Java, Spring, C#/.NET and MySQL, but I am always happy to learn something new.
 
 <img src="/about/experience-cloud.png" alt="Experience cloud" style="margin:0 auto;display:block;">
 
@@ -28,17 +28,24 @@ I have about 12 years of experience working as a software engineer in a variety 
 <div class="career">
     <div>
         <div class="location">
-            <img src="/about/oclc-logo.png" alt="OCLC logo" width="128">
-            2018 - now
+            <img src="/about/topicus.svg" alt="Topicus logo" width="128">
+            2022 - now
         </div>
-        <div class="description">At OCLC I work on software for public libraries. I built a complex integration with the national inter library loan system, worked on a marketing workbench and many other components. I took on the role of lead developer, and built a new team from the ground up. This left me too little time for my real passion, software engineering, so now I am back to working as a senior software engineer.</div>
+        <div class="description">Topicus creates software for healthcare, education, finance and the social domain. At topicus I work on the VIPLive product used that connects regional healthcare providers (such as general practicioners). </div>
+    </div>    
+    <div>
+        <div class="location">
+            <img src="/about/oclc-logo.png" alt="OCLC logo" width="128">
+            2018 - 2022
+        </div>
+        <div class="description">At OCLC I worked on the Wise software for public libraries. I built a complex integration with the national inter library loan system, worked on a marketing workbench and many other components. I took on the role of lead developer, coached junior developers, and built a new team from the ground up. Wise is a complex piece of software with many moving parts, used by millions of library visitors and staff worldwide every day.</div>
     </div>
     <div>
         <div class="location">
             <img src="/about/de-ree-logo.png" alt="De Ree logo" width="128">
             2014 - 2018
         </div>
-        <div class="description">Here I worked as a software engineer and built software for use in historical archives. One of the things I made was a new single-page web client as a replacement for a Swing desktop application. It was really nice to work at a small company and have a lot of direct contact with customers.</div>
+        <div class="description">Here I worked as a software engineer and built software for use in historical archives. One of the things I made was a new single-page web client as a replacement for a Swing desktop application. It was really nice to work at a small company and have a lot of direct contact with customers. Technically this was interesting because of the large volume of (meta)data that is contained in the archives.</div>
     </div>
     <div>
         <div class="location">
