@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>BasvS.dev</title>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+</head>
+
+<body class="base-page">
+    <a name="top"></a>
+    <header>
+        <div class="photo-frame">
+            <a href="/" title="Back home"><img src="/bas.png" alt="Photo of Bas" style="border-radius: 50%;"
+                    width="64"></a>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/blog">BLOG</a></li>
+                <li><a href="/projects">PROJECTS</a></li>
+                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">CODE</a></li>
+                <li><a href="/about">ABOUT ME</a></li>
+                <li><a href="/contact">CONTACT</a></li>
+            </ul>
+            <div class="horizontal-line"></div>
+        </nav>
+    </header>
+    <div class="center-column">
+        
+<section>
+    <h1 class="title">
+        YAB-World &amp; egui
+    </h1>
+    <p class="subtitle"><em>2022-11-06</em></p>
+    <p><a href="/blog/yab-world">Yet Another Block-World</a> is a prototype infinite fully editable world for multiple players. I wanted to make some improvements to the user interface, but my homebrew UI framework was holding me back. Instead of spending a lot of time improving the UI framework I spent a lot of time switching to the <a href="https://github.com/emilk/egui">egui library</a>.</p>
+<span id="continue-reading"></span>
+<h1 id="what-is-egui">What is egui?</h1>
+<p>The <a href="https://github.com/emilk/egui">egui library</a> is a &quot;simple, fast, and highly portable immediate mode GUI library for Rust.&quot; In an immediate GUI all elements are defined and drawn anew each frame. This in contrast to a retained GUI where the GUI elements are declared, e.g. on initialization, and the library handles most state.</p>
+<p>One of the nice things of an immediate mode GUI, and especially egui, is that it is both extremely simple to use and highly flexible. This makes it a good fit for game development. Here's a minimal example of an egui interface:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#65737e;">// Executed every frame, e.g. in the game update method</span><span>
+</span><span>egui::SidePanel::left(&quot;</span><span style="color:#a3be8c;">Main</span><span>&quot;).</span><span style="color:#96b5b4;">show</span><span>(gui, |</span><span style="color:#bf616a;">ui</span><span>| {</span><span>
+</span><span>    </span><span style="color:#65737e;">// The line below concisely defines a button and a click handler</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> ui.</span><span style="color:#96b5b4;">button</span><span>(&quot;</span><span style="color:#a3be8c;">Play</span><span>&quot;).</span><span style="color:#96b5b4;">clicked</span><span>() {</span><span>
+</span><span>        </span><span style="color:#65737e;">// Start a new game</span><span>
+</span><span>    }</span><span>
+</span><span>});</span><span>
+</span></code></pre>
+<p>There are some theoretical benefits and drawbacks for immediate and retained mode GUI libraries, but in practice it mostly boils down to how the library is implemented. In this case egui is extremely well-implemented: it's very simple, flexible and highly performant.</p>
+<h1 id="why-did-this-take-long">Why did this take long?</h1>
+<p>After all, egui is an easy-to-use GUI. Well, in my case I chose to also switch the rendering backend to <a href="https://github.com/grovesNL/glow">glow (GL on Whatever)</a>. This helps me avoid platform-specific rendering code, and allowed me to use the <a href="https://github.com/emilk/egui/tree/master/crates/egui_glow">egui_glow</a> integration. To do this I had to refactor pretty much every line of rendering code: 129 changed files with 1,236 additions and 453 deletions, according to GitHub. </p>
+<h1 id="the-result">The result</h1>
+<p>After converting the rendering backend to glow, actually implementing the GUI was a breeze:</p>
+<p><img src="/yab-world-egui/new-game-gui.jpg" alt="New game gui" /></p>
+<p>The dynamic nature of egui allowed me to easily implement some small additional features, such as a search filter for the block selection screen:</p>
+<p><img src="/yab-world-egui/block-select-gui.jpg" alt="Block selection gui" /></p>
+<p>Overall I can heartily recommend egui as a pleasant and powerful GUI library!</p>
+<p>The new release is available <a href="https://github.com/grunnt/yab-world/releases">here</a>.</p>
+
+    <a class="back-to-top" href="#top">Back to top</a>
+</section>
+
+    </div>
+    <footer>
+        © 2022 Bas van Schoonhoven
+    </footer>
+</body>
+
+</html>

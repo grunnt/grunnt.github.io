@@ -29,7 +29,6 @@ The code is open source and available on [GitHub](https://github.com/grunnt/yab-
 - L = toggle line rendering
 - K = toggle fog rendering
 - X = toggle mouse capture
-- G = show / hide GUI
 - Shift + F = toggle "god mode" which enables flight and disables collision detection
 - Escape = return to menu
 
@@ -46,7 +45,7 @@ The code is open source and available on [GitHub](https://github.com/grunnt/yab-
 - Screen Space Ambient Occlusion (SSAO)
 - Transparent water
 - Some particle effects
-- A basic GUI inspired by [druid](https://docs.rs/druid/latest/druid) with a main menu, settings screen etc.
+- GUI based on [egui](https://github.com/emilk/egui)
 - Built-in visual profiler
 
 There are some obvious things missing in this prototype such as rendering of the player's hands or other players. There are no different biomes. And of course, there is no meaningful gameplay. Still, it's nice to fool around and build things!
