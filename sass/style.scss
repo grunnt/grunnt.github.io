@@ -87,6 +87,7 @@ h1 {
 h2 {
     font-size: $baseline;
     color: $h-color;
+    line-height: 1.4em;
 }
 
 h3 {
@@ -241,11 +242,15 @@ form button {
     margin: 0.5em;
     padding: 0.5em;
     background: #FFF;
+    text-align: center;
+}
+
+.blog-tile h2 {
+    margin-top: 0.5em;
 }
 
 .blog-date {
     font-style: italic;
-    margin-top: 1em;
 }
 
 .blog-description {
@@ -258,8 +263,8 @@ form button {
 }
 
 .blog-list img {
-    width: 200px;
-    height: auto;
+    width: auto;
+    height: 150px;
     border-radius: 0.5em;
     border: solid #e0ecdc 2px;
 }

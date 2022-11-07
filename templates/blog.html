@@ -7,8 +7,8 @@
 <div class="blog-list">
     {% for page in section.pages %}
     <div class="blog-tile">
-        <h2>{{ page.title }}</h2>
         <div class="blog-date">{{ page.date }}</div>
+        <h2>{{ page.title }}</h2>
         <div class="blog-icon">
             {% if page.extra.blog_icon %}
             <a href="{{ page.permalink | safe }}"><img src="{{ page.extra.blog_icon }}" alt="Blog post icon"
