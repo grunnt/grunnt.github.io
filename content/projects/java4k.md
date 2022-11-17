@@ -8,10 +8,6 @@ blog_icon = "/java4k/java4k-logo.jpg"
 
 Java4K was an online competition in which game programmers would try to create the best game possible in Java. I made three small games for this contest.
 
-# Where to play
-
-You can download a playable version of the three games here (TODO).
-
 # My submissions
 
 I wrote three tiny games for the 2012 and 2013 contests (one of which was improved and resubmitted a year later):
