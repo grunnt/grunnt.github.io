@@ -8,8 +8,6 @@ blog_icon = "/yab-world-egui/block-select-gui.jpg"
 
 [Yet Another Block-World](/blog/yab-world) is a prototype infinite fully editable world for multiple players. I wanted to make some improvements to the user interface, but my homebrew UI framework was holding me back. Instead of spending a lot of time improving the UI framework I spent a lot of time switching to the [egui library](https://github.com/emilk/egui).
 
-<!-- more -->
-
 # What is egui?
 
 The [egui library](https://github.com/emilk/egui) is a "simple, fast, and highly portable immediate mode GUI library for Rust." In an immediate GUI all elements are defined and drawn anew each frame. This in contrast to a retained GUI where the GUI elements are declared, e.g. on initialization, and the library handles most state.

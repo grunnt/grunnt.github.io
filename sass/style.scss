@@ -180,6 +180,14 @@ section pre.language-rust * + * {
     margin-top: 0;
 }
 
+blockquote {
+    margin-left: 1em;
+    border-left: 1px solid #888a7a;
+    padding-left: 1em;
+    padding-right: 2em;
+    font-style: italic;
+}
+
 footer {
     margin-top: 2em;
     font-size: 0.8em;
@@ -263,8 +271,8 @@ form button {
 }
 
 .blog-list img {
-    width: auto;
-    height: 150px;
+    width: 256px;
+    height: auto;
     border-radius: 0.5em;
     border: solid #e0ecdc 2px;
 }

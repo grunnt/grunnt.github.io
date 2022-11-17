@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>BasvS.dev</title>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+</head>
+
+<body class="base-page">
+    <a name="top"></a>
+    <header>
+        <div class="photo-frame">
+            <a href="/" title="Back home"><img src="/bas.png" alt="Photo of Bas" style="border-radius: 50%;"
+                    width="64"></a>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/blog">BLOG</a></li>
+                <li><a href="/projects">PROJECTS</a></li>
+                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">CODE</a></li>
+                <li><a href="/about">ABOUT ME</a></li>
+                <li><a href="/contact">CONTACT</a></li>
+            </ul>
+            <div class="horizontal-line"></div>
+        </nav>
+    </header>
+    <div class="center-column">
+        
+<section>
+    <h1 class="title">
+        Making of Java4K games
+    </h1>
+    <p class="subtitle"><em>2022-11-17</em></p>
+    <p>Java4K was an online competition in which game programmers would try to create the best game possible in Java. I made three small games for this contest. You can see and download them <a href="/projects/java4k">here</a>.</p>
+<h1 id="the-contest">The contest</h1>
+<p>Java4K was an online competition in which game programmers would try to create the best game possible in Java. The catch was that there is a 4KB limit to the resulting jar binary, which is the smallest file size possible on most operating systems. The fun thing is that this limitation gives the programmer certain boundaries to work with, resulting in higher productivity and stimulating creative solutions.</p>
+<p>The goal of this contest was <em>not</em> to create beautiful code, as the tricks used to reduce code size often resulted in ugly code devoid of any best practice. For example, it does not use fancy luxuries such as placing classes in packages. Still, squeezing the last drop of fun and performance from a very limited amount of code was fun in itself.</p>
+<p>This contest ran from 2005 to 2013. Games were released as Java Applets, which could be run directly in the browser. The cool thing is that all the games were playable directly from the website, and visistors could leave comments and vote. After it became clear that Java Applets would be deprecated (as of Java 9), the contest eventually ended.</p>
+<h1 id="optimizing-for-size">Optimizing for size</h1>
+<p>To reduce the size of the final binary I had to use some tricks you would normally never use while developing an application. For example, I avoided the use of fancy luxuries such as classes since each class adds a bit of overhead. A key point was to be able to rapidly iterate so that I would quickly be able to see whether I reached the 4K boundary.</p>
+<h2 id="embedding-images">Embedding images</h2>
+<p>The Wizzy game had a sprite sheet with a number of images used for rendering. To avoid the PNG file overhead I used a small utility class to convert the PNG images to a String that could be easily embedded inside the game source code. In addition, a palette array would be printed that would map the values in the String to actual colors for use rendering. </p>
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span> </span><span style="color:#b48ead;">private final int[][]</span><span> palette = </span><span style="color:#b48ead;">new int</span><span>[][]{{</span><span style="color:#d08770;">119</span><span>, </span><span style="color:#d08770;">2</span><span>, </span><span style="color:#d08770;">47</span><span>}, {</span><span style="color:#d08770;">188</span><span>, </span><span style="color:#d08770;">0</span><span>, </span><span style="color:#d08770;">221</span><span>}, {</span><span style="color:#d08770;">255</span><span>, </span><span style="color:#d08770;">255</span><span>, </span><span style="color:#d08770;">255</span><span>}, </span><span style="color:#65737e;">// And so on...</span><span style="color:#65737e;">
+</span><span> private final static </span><span style="color:#ebcb8b;">String</span><span> spriteSheetString = &quot;</span><span style="color:#96b5b4;">\u</span><span style="color:#a3be8c;">0000</span><span style="color:#96b5b4;">\u</span><span style="color:#a3be8c;">0000</span><span style="color:#96b5b4;">\u</span><span style="color:#a3be8c;">0000</span><span style="color:#96b5b4;">\u</span><span style="color:#a3be8c;">0000</span><span style="color:#96b5b4;">\u</span><span style="color:#a3be8c;">0000</span><span style="color:#96b5b4;">\u</span><span style="color:#a3be8c;">0001</span><span>&quot; </span><span style="color:#65737e;">// And so on...</span><span style="color:#65737e;">
+</span></code></pre>
+<p>Even though I would lose the lossless compression of the PNG format, the resulting jar file would be compressed anyway using a different approach.</p>
+<h2 id="generating-sounds">Generating sounds</h2>
+<p>Another rather neat way to save space was to procedurally generate some simple sounds (beep, crash). The nice thing about the extensive Java
+runtime library is that it even has some easy to use tools for this. For example, this is how I made a &quot;gun&quot; like sound for Farmer John &amp; The Birds:</p>
+<pre data-lang="java" style="background-color:#2b303b;color:#c0c5ce;" class="language-java "><code class="language-java" data-lang="java"><span>
+</span><span>  </span><span style="color:#ebcb8b;">Clip</span><span> gunSound; </span><span style="color:#65737e;">// The variable used to control playback</span><span style="color:#65737e;">
+</span><span>  </span><span>
+</span><span>  {</span><span>
+</span><span>    </span><span style="color:#65737e;">// Buffer for the audio sample</span><span style="color:#65737e;">
+</span><span>    </span><span style="color:#b48ead;">byte[]</span><span> gunSoundData = </span><span style="color:#b48ead;">new byte</span><span>[</span><span style="color:#d08770;">3000</span><span>];</span><span>
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Generate a simplistic boom using random noise</span><span style="color:#65737e;">
+</span><span>    </span><span style="color:#b48ead;">float</span><span> cycle = </span><span style="color:#d08770;">0</span><span style="color:#b48ead;">f</span><span>;</span><span>
+</span><span>    </span><span style="color:#b48ead;">float</span><span> cycleStep = </span><span style="color:#d08770;">8</span><span style="color:#b48ead;">f </span><span>/ </span><span style="color:#d08770;">16000</span><span style="color:#b48ead;">f</span><span>;</span><span>
+</span><span>    </span><span style="color:#b48ead;">for </span><span>(</span><span style="color:#b48ead;">int</span><span> i = </span><span style="color:#d08770;">0</span><span>; i &lt; gunSoundData.length; i++) {</span><span>
+</span><span>      gunSoundData[i] = (</span><span style="color:#b48ead;">byte</span><span>) ((cycle - </span><span style="color:#d08770;">0.5</span><span style="color:#b48ead;">f</span><span>) * random.</span><span style="color:#bf616a;">nextInt</span><span>(</span><span style="color:#d08770;">250</span><span>) * (</span><span style="color:#d08770;">1</span><span style="color:#b48ead;">f </span><span>- i / (</span><span style="color:#b48ead;">float</span><span>) gunSoundData.length));</span><span>
+</span><span>      cycle = (cycle + cycleStep) % </span><span style="color:#d08770;">1</span><span style="color:#b48ead;">f</span><span>;</span><span>
+</span><span>      cycleStep += </span><span style="color:#d08770;">0</span><span style="color:#b48ead;">f</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Convert it to a sound clip</span><span style="color:#65737e;">
+</span><span>    </span><span style="color:#ebcb8b;">AudioFormat</span><span> audioFormat8 = </span><span style="color:#b48ead;">new </span><span style="color:#ebcb8b;">AudioFormat</span><span>(</span><span style="color:#d08770;">8000</span><span>, </span><span style="color:#d08770;">8</span><span>, </span><span style="color:#d08770;">1</span><span>, </span><span style="color:#d08770;">true</span><span>, </span><span style="color:#d08770;">true</span><span>);</span><span>
+</span><span>    gunSound = </span><span style="color:#ebcb8b;">AudioSystem</span><span>.</span><span style="color:#bf616a;">getClip</span><span>();</span><span>
+</span><span>    gunSound.</span><span style="color:#bf616a;">open</span><span>(audioFormat8, gunSoundData, </span><span style="color:#d08770;">0</span><span>, gunSoundData.length);</span><span>
+</span><span>  }</span><span>
+</span><span>
+</span><span>  </span><span style="color:#65737e;">// Play the sound (repeat this part only)</span><span style="color:#65737e;">
+</span><span>  gunSound.</span><span style="color:#bf616a;">setFramePosition</span><span>(</span><span style="color:#d08770;">0</span><span>); </span><span style="color:#65737e;">// rewind to the beginning</span><span style="color:#65737e;">
+</span><span>  gunSound.</span><span style="color:#bf616a;">start</span><span>();</span><span>
+</span><span>
+</span></code></pre>
+<h2 id="crazy-build-chains">Crazy build chains</h2>
+<p>Writing Java code efficiently was not sufficient to reduce the size of the resulting jar file. Additional tricks were also employed to compress the resulting jar, using e.g. the Proguard Java Obfuscator, pack200 (a JAR packing tool) and different compression tools to generated a gzipped jar file. The smallest gzipped jar would be chosen and deployed to the web.</p>
+<p><img src="/java4k/build-chain.png" alt="Build chain schematic" /></p>
+<h2 id="being-creative">Being creative</h2>
+<p>This was the best part. All technical tricks won't help much if the game was not fun. I found the limitations posed by the size constraints to be stimulating: it puts the focus really well on what matters, which is creating a game that is fun first. Without constraints it is so easy to spend way too much time building a game engine or polishing unimportant details. I'm quite happy with the little games that were the result, as there's some actual fun to be had.</p>
+<h1 id="source-code">Source code</h1>
+<p>The source code is available <a href="https://github.com/grunnt/java4k">here</a> under the permissive MIT license (do not expect clean code, however). Since Java Applets are no longer supported I rewrote the code a bit to allow the games to be run as a desktop application.</p>
+
+    <a class="back-to-top" href="#top">Back to top</a>
+</section>
+
+    </div>
+    <footer>
+        © 2022 Bas van Schoonhoven
+    </footer>
+</body>
+
+</html>

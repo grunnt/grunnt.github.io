@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>BasvS.dev</title>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+</head>
+
+<body class="base-page">
+    <a name="top"></a>
+    <header>
+        <div class="photo-frame">
+            <a href="/" title="Back home"><img src="/bas.png" alt="Photo of Bas" style="border-radius: 50%;"
+                    width="64"></a>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/blog">BLOG</a></li>
+                <li><a href="/projects">PROJECTS</a></li>
+                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">CODE</a></li>
+                <li><a href="/about">ABOUT ME</a></li>
+                <li><a href="/contact">CONTACT</a></li>
+            </ul>
+            <div class="horizontal-line"></div>
+        </nav>
+    </header>
+    <div class="center-column">
+        
+<section>
+    <h1 class="title">
+        Java4K games
+    </h1>
+    <p class="subtitle"><em>2022-11-09</em></p>
+    <p>Java4K was an online competition in which game programmers would try to create the best game possible in Java. I made three small games for this contest.</p>
+<h1 id="where-to-play">Where to play</h1>
+<p>You can download a playable version of the three games here (TODO).</p>
+<h1 id="my-submissions">My submissions</h1>
+<p>I wrote three tiny games for the 2012 and 2013 contests (one of which was improved and resubmitted a year later):</p>
+<p><img src="/java4k/games-by-grunnt.jpg" alt="List of games by Grunnt on Java4K website" /></p>
+<h2 id="galactic-conquest-4k-strategy">Galactic Conquest 4K - strategy</h2>
+<p><img src="/java4k/gc4k.jpg" alt="Galactic Conquest 4K screenshot" /></p>
+<blockquote>
+<p>The year is 4096 and all hell just broke loose. Xenophobia got the upper hand, and now all races in the known galaxy are at war. Cruisers are cruising, blasters are blasting and aliens are screaming. There is no surrender, only extermination or victory!</p>
+</blockquote>
+<p>The goal of the game is simple: conquer the galaxy. There are three opponents which will try to do the same. Gameplay is relatively easy: click a star to select it, then click another star to ships to that star. Each star builds new space ships over time.</p>
+<p>I added some complexity to make things more interesting: you can select whether to move 1, half or all ships, a star builds infrastructure which increases ship building speed, and you can create a limited number of starbases for chokepoint defense.</p>
+<p>I put a lot of love in this one, and it shows in some nice details. I managed to squeeze in an options screen where difficulty, game mode and race color could be chosen. The game itself looks colorful and interesting, and is really easy to get into, yet it does have a bit of depth. A semitransparent graph in the bottom of the screen shows the relative strengths of the opponents.</p>
+<p>I made a basic version for the 2012 contest and a much improved on for the 2013 contest. Quite a few people found Galactic Conquest addictive, myself included.</p>
+<h2 id="farmer-john-and-the-birds-4k-point-and-click-shooter">Farmer John and the Birds 4K - point and click shooter</h2>
+<p><img src="/java4k/farmer-john4k.jpg" alt="Farmer John 4K screenshot" /></p>
+<blockquote>
+<p>Farmer John wakes up to find a swarm of nasty birds coming to eat all his precious corn. Help him kill them all before it's too late!</p>
+</blockquote>
+<p>This one was a bit simpler but still fun. Waves of birds move from the top of the screen towards your cornfield (much like space invaders). You need to shoot them all before they eat the corn.</p>
+<p>What made this a bit more interesting is that the birds <em>avoid</em> the mouse cursor used to aim the farmer's gun. They also look in the direction of the cursor, which was kind of cute, and a little detail that brought the game alive. </p>
+<p>The difficulty of the waves increases over time, some upgrades drop, and new types of birds arrive. It becomes quite hectic over time.</p>
+<h2 id="wizzy-4k-platformer-with-a-twist">Wizzy 4K - platformer with a twist</h2>
+<p><img src="/java4k/wizzy4k.jpg" alt="Wizzy 4K screenshot" /></p>
+<blockquote>
+<p>&quot;Wizzy, like most students, didn't pay attention in the boring dark magic classes. Which is a pity, because one of his fellow students did. And he took over the University, turning all teachers and students into green slimy monsters while Wizzy was taking a nap! Not knowing any offensive spells, Wizzy has no chance of beating the Evil Guy. Not that he wants to anyway, he just wants to get out! The only spells Wizzy knows are gravity inversion spells, which he thought were rather neat. Help him get out alive using these spells!</p>
+</blockquote>
+<p>For this game I wanted to try making a platformer. The goal is simply to reach the exit of each leve. To make things more interesting the player can use two spells (if mana crystals are picked up first). One spell inverts gravity for the player, the other for everything else. This resulted in some nice puzzles, even though the number of available levels was limited.</p>
+<h1 id="how-it-s-made">How it's made</h1>
+<p>Read more about how I made these games <a href="/blog/making-java4k">here</a>. The source code can be found <a href="https://github.com/grunnt/java4k">here</a>.</p>
+
+    <a class="back-to-top" href="#top">Back to top</a>
+</section>
+
+    </div>
+    <footer>
+        © 2022 Bas van Schoonhoven
+    </footer>
+</body>
+
+</html>
