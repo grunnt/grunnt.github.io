@@ -3,14 +3,12 @@ title = "Falling Rust"
 description = "Making sand fall using Rust, Bevy and egui."
 date = 2021-11-16
 [extra]
-blog_icon = "/falling-rust/screenshot.png"
+blog_icon = "/falling-rust/logo.png"
 +++
 
 After seeing the falling sand simulator [Sandspiel](https://sandspiel.club), along with the accompanying ["Making sandspiel" article](https://maxbittker.com/making-sandspiel), I just had to make one of my own! I'm fascinated by how a set of simple rules can result in such complex behaviour.
 
 On this page I describe my own falling-sand toy, written using Rust, Bevy and egui. It's a 2D sandbox that is simulating a simplified form of physics.
-
-<!-- more -->
 
 ![Screenshot](/falling-rust/screenshot.png)
 
@@ -24,6 +22,7 @@ You can download a Windows executable [here](https://github.com/grunnt/falling-r
 - Sources for several liquids which generate an infinite supply of the liquid
 - Liquid drains: a "black hole" which will make neighbouring liquids disappear
 - A "life" element that functions somewhat like Conway's "game of life" (it also burns)
+- Seeds that turn into plants (read more about this [here](/blog/falling-rust-plants))
 - Editor with several tools: place circle, square or spray in different sizes
 - Pause and step the simulation
 - Clear the sandbox

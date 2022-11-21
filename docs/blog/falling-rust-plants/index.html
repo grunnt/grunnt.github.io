@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <title>BasvS.dev</title>
+    <link rel="stylesheet" type="text/css" href="/style.css" />
+</head>
+
+<body class="base-page">
+    <a name="top"></a>
+    <header>
+        <div class="photo-frame">
+            <a href="/" title="Back home"><img src="/bas.png" alt="Photo of Bas" style="border-radius: 50%;"
+                    width="64"></a>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/blog">BLOG</a></li>
+                <li><a href="/projects">PROJECTS</a></li>
+                <li><a href="https://github.com/grunnt?tab=repositories" target="_blank">CODE</a></li>
+                <li><a href="/about">ABOUT ME</a></li>
+                <li><a href="/contact">CONTACT</a></li>
+            </ul>
+            <div class="horizontal-line"></div>
+        </nav>
+    </header>
+    <div class="center-column">
+        
+<section>
+    <h1 class="title">
+        Growing plants in Falling Rust
+    </h1>
+    <p class="subtitle"><em>2022-11-20</em></p>
+    <p>Falling Rust is a falling-sand toy I wrote. You can read more about it and download the application <a href="/projects/falling-rust">here</a>.</p>
+<p>After receiving my first pull request for this toy (yay!) that added a simple plant element (growing where water was), I figured that I could make these plants a little bit more interesting based on some ideas I had lying around. </p>
+<h1 id="the-goal">The goal</h1>
+<p>Instead of filling all space where water was I rather would have the plant grow upwards, and not stop growing after some time. Also, I'd like to have a &quot;seed&quot; that would turn into a plant whenever it was in contact with sand and water.</p>
+<h1 id="data-structure">Data structure</h1>
+<p>Since Falling Rust is a cellular automata world, it consists of a grid of cells where each cell is governed by a somewhat simple set of rules. In addition each cell knows about the neighbouring cells. Each cell consists of a certain element (e.g. sand, rock, water, fire) that determines what it looks like and how it behaves. It also has a bit of state that allow for a little more complex behaviour:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>Cell {</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">element</span><span>: Element,</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">variant</span><span>: </span><span style="color:#b48ead;">u8</span><span>,   </span><span style="color:#65737e;">// Usually used for bringing some variance in colors</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">strength</span><span>: </span><span style="color:#b48ead;">u8</span><span>,  </span><span style="color:#65737e;">// To limit the life of elements such as fire, smoke or plants</span><span>
+</span><span>    </span><span style="color:#b48ead;">pub </span><span style="color:#bf616a;">visited</span><span>: </span><span style="color:#b48ead;">bool</span><span>,</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<h1 id="plant-behaviour">Plant behaviour</h1>
+<p>Each element in the falling-sand world has its own update function with the following signature:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">update_element</span><span>(</span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#bf616a;">level</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> SandBox) -&gt; </span><span style="color:#b48ead;">bool </span><span>{</span><span>
+</span><span>    </span><span style="color:#65737e;">// Update the element, using &quot;level&quot; to learn more about neighbouring elements</span><span>
+</span><span>    </span><span style="color:#65737e;">// Return true if the element was changed</span><span>
+</span><span>    </span><span style="color:#d08770;">false</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>During the simulation phase of each frame the code iterates over all cells in the grid and calls the appropriate update function based on its element, and sometimes on the state fields <code>variant</code> and <code>strength</code> as well.</p>
+<p>The function for plants is one of the most extensive:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">fn </span><span style="color:#8fa1b3;">update_plant</span><span>(</span><span style="color:#bf616a;">x</span><span>: </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#bf616a;">y</span><span>: </span><span style="color:#b48ead;">usize</span><span>, </span><span style="color:#bf616a;">level</span><span>: &amp;</span><span style="color:#b48ead;">mut</span><span> SandBox) -&gt; </span><span style="color:#b48ead;">bool </span><span>{</span><span>
+</span><span>    </span><span style="color:#65737e;">// Get a random value which we reuse several times, since random is relatively expensive</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> random = level.</span><span style="color:#96b5b4;">random</span><span>(</span><span style="color:#d08770;">1000</span><span>);</span><span>
+</span><span>    </span><span style="color:#65737e;">// Get cell strength (&quot;growth energy left&quot;) and variant (&quot;distance from root&quot;)</span><span>
+</span><span>    </span><span style="color:#b48ead;">let </span><span>(cell_strength, cell_variant) = {</span><span>
+</span><span>        </span><span style="color:#b48ead;">let</span><span> cell = level.</span><span style="color:#96b5b4;">get</span><span>(x, y);</span><span>
+</span><span>        (cell.strength, cell.variant)</span><span>
+</span><span>    };</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> cell_variant &lt;= </span><span style="color:#d08770;">1 </span><span>{</span><span>
+</span><span>        </span><span style="color:#65737e;">// This cell is at the tip. Sometimes the tip turns into a new seed.</span><span>
+</span><span>        </span><span style="color:#b48ead;">if</span><span> random &gt; </span><span style="color:#d08770;">990 </span><span>{</span><span>
+</span><span>            level.</span><span style="color:#96b5b4;">set_element</span><span>(x, y, Element::Seed);</span><span>
+</span><span>        }</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#65737e;">// Are we still attached to the plant?</span><span>
+</span><span>    </span><span style="color:#b48ead;">let mut</span><span> attached = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> cell_variant == Element::Seed.</span><span style="color:#96b5b4;">strength</span><span>() {</span><span>
+</span><span>        </span><span style="color:#65737e;">// Root cell</span><span>
+</span><span>        attached = </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span>    } </span><span style="color:#b48ead;">else </span><span>{</span><span>
+</span><span>        </span><span style="color:#65737e;">// Check neighbours: if there is one which is closer to the root then we consider this cell &quot;attached&quot;</span><span>
+</span><span>        </span><span style="color:#b48ead;">for </span><span>(nx, ny) in [(x - </span><span style="color:#d08770;">1</span><span>, y), (x + </span><span style="color:#d08770;">1</span><span>, y), (x, y + </span><span style="color:#d08770;">1</span><span>), (x, y + </span><span style="color:#d08770;">1</span><span>)] {</span><span>
+</span><span>            </span><span style="color:#b48ead;">let</span><span> neighbour = level.</span><span style="color:#96b5b4;">get</span><span>(nx, ny);</span><span>
+</span><span>            </span><span style="color:#b48ead;">if</span><span> neighbour.element == Element::Plant &amp;&amp; neighbour.variant &gt; cell_variant {</span><span>
+</span><span>                attached = </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span>                </span><span style="color:#b48ead;">break</span><span>;</span><span>
+</span><span>            }</span><span>
+</span><span>        }</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span style="color:#b48ead;">if </span><span>!attached {</span><span>
+</span><span>        </span><span style="color:#65737e;">// Not attached to the plant, so die</span><span>
+</span><span>        level.</span><span style="color:#96b5b4;">set_element</span><span>(x, y, Element::Ash);</span><span>
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> cell_strength &lt;= </span><span style="color:#d08770;">1 </span><span>{</span><span>
+</span><span>        </span><span style="color:#65737e;">// Not growing anymore</span><span>
+</span><span>        </span><span style="color:#b48ead;">return </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span style="color:#65737e;">// Plant is still growing (at random intervals)</span><span>
+</span><span>    </span><span style="color:#b48ead;">if</span><span> random &gt; </span><span style="color:#d08770;">970 </span><span>{</span><span>
+</span><span>        </span><span style="color:#65737e;">// Get random growth direction: up, left or right</span><span>
+</span><span>        </span><span style="color:#b48ead;">let</span><span> random = random - </span><span style="color:#d08770;">980</span><span>;</span><span>
+</span><span>        </span><span style="color:#b48ead;">let </span><span>(nx, ny) = </span><span style="color:#b48ead;">match</span><span> random {</span><span>
+</span><span>            </span><span style="color:#d08770;">0 </span><span>| </span><span style="color:#d08770;">1 </span><span>=&gt; (x - </span><span style="color:#d08770;">1</span><span>, y),</span><span>
+</span><span>            </span><span style="color:#d08770;">2 </span><span>| </span><span style="color:#d08770;">3 </span><span>=&gt; (x + </span><span style="color:#d08770;">1</span><span>, y),</span><span>
+</span><span>            _ =&gt; (x, y - </span><span style="color:#d08770;">1</span><span>),</span><span>
+</span><span>        };</span><span>
+</span><span>        </span><span style="color:#65737e;">// Grow in that direction (if possible)</span><span>
+</span><span>        </span><span style="color:#b48ead;">let</span><span> other_element = level.</span><span style="color:#96b5b4;">get</span><span>(nx, ny).element;</span><span>
+</span><span>        </span><span style="color:#b48ead;">let</span><span> new_cell_strength = cell_strength - </span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span>        </span><span style="color:#b48ead;">if</span><span> other_element.</span><span style="color:#96b5b4;">allows_plant_growth</span><span>() {</span><span>
+</span><span>            level.</span><span style="color:#96b5b4;">set_element_with_strength</span><span>(nx, ny, Element::Plant, new_cell_strength);</span><span>
+</span><span>            level.</span><span style="color:#96b5b4;">get_mut</span><span>(nx, ny).variant = cell_variant - </span><span style="color:#d08770;">1</span><span>;</span><span>
+</span><span>            level.</span><span style="color:#96b5b4;">reduce_strength</span><span>(x, y, new_cell_strength);</span><span>
+</span><span>        }</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span style="color:#d08770;">false</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>In addition I made a &quot;seed&quot; element that turns into a plant whenever is neighbours contain water and nutrition. Determining this wat quite simple:</p>
+<pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">let mut</span><span> nutrition = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span style="color:#b48ead;">let mut</span><span> water = </span><span style="color:#d08770;">false</span><span>;</span><span>
+</span><span style="color:#b48ead;">for </span><span>(nx, ny) in [(x - </span><span style="color:#d08770;">1</span><span>, y), (x + </span><span style="color:#d08770;">1</span><span>, y), (x, y - </span><span style="color:#d08770;">1</span><span>), (x, y + </span><span style="color:#d08770;">1</span><span>)] {</span><span>
+</span><span>    </span><span style="color:#b48ead;">let</span><span> neighbour_element = level.</span><span style="color:#96b5b4;">get</span><span>(nx, ny).element;</span><span>
+</span><span>    </span><span style="color:#b48ead;">if </span><span>!nutrition &amp;&amp; neighbour_element.</span><span style="color:#96b5b4;">plant_nutrition</span><span>() {</span><span>
+</span><span>        nutrition = </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>    </span><span style="color:#b48ead;">if </span><span>!water &amp;&amp; neighbour_element.</span><span style="color:#96b5b4;">plant_watering</span><span>() {</span><span>
+</span><span>        water = </span><span style="color:#d08770;">true</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>Here <code>plant_nutrition</code> and <code>plant_watering</code> are functions of the element that return whether it supplies nutrition or, basically, is water. I was thinking of adding wet and dry sand as well, but haven't bothered yet.</p>
+<p>The result using these functions is quite nice: whenever a seed comes into contact with water and nutrition (e.g. sand or ash), it turns into a plant an grows upwards. Once it is fully grown a seed is generated at its tip. This seed usually falls down and sometimes turns into a new plant:</p>
+<img src="/falling-rust/plants-growing.gif" alt="Plants growing animation" width="256"/>
+<p>You can now play with the plant element, and all other elements, by downloading <a href="/projects/falling-rust">Falling Rust</a>.</p>
+
+    <a class="back-to-top" href="#top">Back to top</a>
+</section>
+
+    </div>
+    <footer>
+        © 2022 Bas van Schoonhoven
+    </footer>
+</body>
+
+</html>
