@@ -26,16 +26,24 @@ html {
     scroll-behavior: smooth;
 }
 
-* + * {
-  margin-top: $baseline;
+*+* {
+    margin-top: $baseline;
 }
 
-br, audio, br, nav, nav ul , li {
-  margin-top: 0;
+br,
+audio,
+br,
+nav,
+nav ul,
+li {
+    margin-top: 0;
 }
 
 // Typography
- @font-face { font-family: Belgrano; src: url('fonts/Belgrano-Regular.ttf'); } 
+@font-face {
+    font-family: Belgrano;
+    src: url('fonts/Belgrano-Regular.ttf');
+}
 
 html {
     font-family: Verdana, sans-serif;
@@ -47,21 +55,21 @@ body {
 }
 
 a {
-  color: #46aed5;
-  transition: all 0.2s ease-in-out;
-  text-decoration: none;
+    color: #46aed5;
+    transition: all 0.2s ease-in-out;
+    text-decoration: none;
 }
 
 a:hover {
-  color: #005675;
-  opacity: 1;
-  text-decoration-color: inherit;
+    color: #005675;
+    opacity: 1;
+    text-decoration-color: inherit;
 }
 
 
 // Layout and general styling
 body {
-	line-height: $baseline;
+    line-height: $baseline;
     font-family: inherit;
     color: $text-color;
     padding: 1em;
@@ -71,7 +79,9 @@ html {
     line-height: $baseline;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
     font-family: Belgrano, Cambria, Georgia, serif;
 }
 
@@ -131,7 +141,8 @@ hr {
     color: #566a43;
 }
 
-.center-column, header {
+.center-column,
+header {
     max-width: 1024px;
     margin: 0 auto;
 }
@@ -146,11 +157,14 @@ section {
     background: #FFF;
 }
 
-section h1, section h2, section h3 {
+section h1,
+section h2,
+section h3 {
     text-align: left;
 }
 
-section ul, section ol {
+section ul,
+section ol {
     padding-left: 1em;
     margin-bottom: 1em;
     margin-top: 0.5em;
@@ -161,22 +175,20 @@ section li {
     padding-left: 0.5em;
 }
 
-section code {
-    font-size: 0.8em;
-}
-
 section img {
     max-width: 100%;
     border-radius: 0.5em;
 }
 
-section pre.language-rust {
+code {
+    font-size: 0.8em;
     overflow-x: auto;
     line-height: 1em;
     padding: 0.5em;
+    display: block;
 }
 
-section pre.language-rust * + * {
+code *+* {
     margin-top: 0;
 }
 
@@ -205,7 +217,8 @@ form {
     text-align: left;
 }
 
-form input, form textarea {
+form input,
+form textarea {
     width: 100%;
     padding: 3px 6px;
     line-height: $baseline;
@@ -353,7 +366,7 @@ form button {
 }
 
 // Small screens
-@media (max-width: 880px) { 
+@media (max-width: 880px) {
     .home-page .center-column {
         flex-direction: column;
         margin-top: 0;
@@ -381,7 +394,7 @@ form button {
         margin-top: 0.5em;
         padding: 0;
     }
-    
+
     .career>div {
         flex-direction: column;
     }
