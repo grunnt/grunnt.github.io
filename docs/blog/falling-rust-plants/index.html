@@ -36,7 +36,7 @@
     <p>Falling Rust is a falling-sand toy I wrote. You can read more about it and download the application <a href="/projects/falling-rust">here</a>.</p>
 <p>After receiving my first pull request for this toy (yay!) that added a simple plant element (growing where water was), I figured that I could make these plants a little bit more interesting based on some ideas I had lying around. </p>
 <h1 id="the-goal">The goal</h1>
-<p>Instead of filling all space where water was I rather would have the plant grow upwards, and not stop growing after some time. Also, I'd like to have a &quot;seed&quot; that would turn into a plant whenever it was in contact with sand and water.</p>
+<p>Instead of filling all space where water was I rather would have the plant grow upwards, and stop growing after some time. Also, I'd like to have a &quot;seed&quot; that would turn into a plant whenever it was in contact with sand and water.</p>
 <h1 id="data-structure">Data structure</h1>
 <p>Since Falling Rust is a cellular automata world, it consists of a grid of cells where each cell is governed by a somewhat simple set of rules. In addition each cell knows about the neighbouring cells. Each cell consists of a certain element (e.g. sand, rock, water, fire) that determines what it looks like and how it behaves. It also has a bit of state that allow for a little more complex behaviour:</p>
 <pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>Cell {</span><span>
@@ -116,7 +116,7 @@
 </span><span>    </span><span style="color:#d08770;">false</span><span>
 </span><span>}</span><span>
 </span></code></pre>
-<p>In addition I made a &quot;seed&quot; element that turns into a plant whenever is neighbours contain water and nutrition. Determining this wat quite simple:</p>
+<p>In addition I made a &quot;seed&quot; element that turns into a plant whenever is neighbours contain water and nutrition. Determining this was quite simple:</p>
 <pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">let mut</span><span> nutrition = </span><span style="color:#d08770;">false</span><span>;</span><span>
 </span><span style="color:#b48ead;">let mut</span><span> water = </span><span style="color:#d08770;">false</span><span>;</span><span>
 </span><span style="color:#b48ead;">for </span><span>(nx, ny) in [(x - </span><span style="color:#d08770;">1</span><span>, y), (x + </span><span style="color:#d08770;">1</span><span>, y), (x, y - </span><span style="color:#d08770;">1</span><span>), (x, y + </span><span style="color:#d08770;">1</span><span>)] {</span><span>
@@ -130,7 +130,7 @@
 </span><span>}</span><span>
 </span></code></pre>
 <p>Here <code>plant_nutrition</code> and <code>plant_watering</code> are functions of the element that return whether it supplies nutrition or, basically, is water. I was thinking of adding wet and dry sand as well, but haven't bothered yet.</p>
-<p>The result using these functions is quite nice: whenever a seed comes into contact with water and nutrition (e.g. sand or ash), it turns into a plant an grows upwards. Once it is fully grown a seed is generated at its tip. This seed usually falls down and sometimes turns into a new plant:</p>
+<p>The result using these functions is quite nice: whenever a seed comes into contact with water and nutrition (e.g. sand or ash), it turns into a plant and grows upwards. Once it is fully grown a seed is generated at its tip. This seed usually falls down and sometimes turns into a new plant:</p>
 <img src="/falling-rust/plants-growing.gif" alt="Plants growing animation" width="256"/>
 <p>You can now play with the plant element, and all other elements, by downloading <a href="/projects/falling-rust">Falling Rust</a>.</p>
 

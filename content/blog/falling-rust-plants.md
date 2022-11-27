@@ -12,7 +12,7 @@ After receiving my first pull request for this toy (yay!) that added a simple pl
 
 # The goal
 
-Instead of filling all space where water was I rather would have the plant grow upwards, and not stop growing after some time. Also, I'd like to have a "seed" that would turn into a plant whenever it was in contact with sand and water.
+Instead of filling all space where water was I rather would have the plant grow upwards, and stop growing after some time. Also, I'd like to have a "seed" that would turn into a plant whenever it was in contact with sand and water.
 
 # Data structure 
 
@@ -104,7 +104,7 @@ fn update_plant(x: usize, y: usize, level: &mut SandBox) -> bool {
 }
 ```
 
-In addition I made a "seed" element that turns into a plant whenever is neighbours contain water and nutrition. Determining this wat quite simple:
+In addition I made a "seed" element that turns into a plant whenever is neighbours contain water and nutrition. Determining this was quite simple:
 
 ```rust
 let mut nutrition = false;
@@ -122,7 +122,7 @@ for (nx, ny) in [(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)] {
 
 Here `plant_nutrition` and `plant_watering` are functions of the element that return whether it supplies nutrition or, basically, is water. I was thinking of adding wet and dry sand as well, but haven't bothered yet.
 
-The result using these functions is quite nice: whenever a seed comes into contact with water and nutrition (e.g. sand or ash), it turns into a plant an grows upwards. Once it is fully grown a seed is generated at its tip. This seed usually falls down and sometimes turns into a new plant:
+The result using these functions is quite nice: whenever a seed comes into contact with water and nutrition (e.g. sand or ash), it turns into a plant and grows upwards. Once it is fully grown a seed is generated at its tip. This seed usually falls down and sometimes turns into a new plant:
 
 <img src="/falling-rust/plants-growing.gif" alt="Plants growing animation" width="256"/>
 
