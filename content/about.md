@@ -18,7 +18,7 @@ This site acts as a portfolio and as a place for sharing things that interest me
 
 # Experience
 
-I have about 12 years of experience working as a software engineer in a variety of settings and roles, and I have experience working with a wide range of languages, frameworks and technologies. My main focus professionally is Java, Spring, C#/.NET and MySQL, but I am always happy to learn something new.
+I have about 12 years of experience working as a software engineer in a variety of settings and roles, and I have experience working with a wide range of languages, frameworks and technologies. My main focus professionally is Java, Spring, C#/.NET and different databases (MySQL, SQL Server, Postgres), but I am always happy to learn something new.
 
 <img src="/about/experience-cloud.png" alt="Experience cloud" style="margin:2em auto;display:block;">
 
