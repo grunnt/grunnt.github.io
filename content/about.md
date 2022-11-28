@@ -10,15 +10,13 @@ date = 2022-05-25
 
 Welcome to my personal website! My name is Bas van Schoonhoven. I live in Groningen in the Netherlands with my wonderful wife and two kids and work as a senior software engineer. 
 
-Professionally I mostly do Java, Spring and MySQL backend development with some front-end work mixed in. I like fixing unfixable bugs and turning complex problems into elegant, simple solutions. 
-
-In my spare time I love to spend time with my family, create prototypes and toys using other languages such as Rust and OpenGL, go for a run or read a book (SF/Fantasy and some literature).
+At work I like fixing unfixable bugs and turning complex problems into elegant, simple solutions. In my spare time I love to spend time with my family, create prototypes and toys using other languages such as Rust and OpenGL, go for a run or read a book (SF/Fantasy and some literature).
 
 This site acts as a portfolio and as a place for sharing things that interest me.
 
 # Experience
 
-I have about 12 years of experience working as a software engineer in a variety of settings and roles, and I have experience working with a wide range of languages, frameworks and technologies. My main focus professionally is Java, Spring, C#/.NET and different databases (MySQL, SQL Server, Postgres), but I am always happy to learn something new.
+I work as a software engineer since about 2007 in a variety of settings and roles. I have experience working with a wide range of languages, frameworks and technologies, and I'm always happy to learn something new!
 
 <img src="/about/experience-cloud.png" alt="Experience cloud" style="margin:2em auto;display:block;">
 
@@ -59,10 +57,10 @@ I have about 12 years of experience working as a software engineer in a variety 
             <img src="/about/university-of-twente.png" alt="University of Twente logo" width="128">
             <span>2007</span>
         </div>
-        <div class="description">I have gotten a master degree in Philosophy of Science, Technology and Society at the University of Twente. This is a combination of about two-thirds computer science and one-thirds philosophy and sociology. Before this I followed practical education in electrical and computer engineering.</div>
+        <div class="description">I have a masters degree in Philosophy of Science, Technology and Society at the University of Twente. This is a combination of information technology, sociology and philosophy. Before this I had practical education in electrical and computer engineering.</div>
     </div>
 </div>
 
-# Contact me
+# Want to contact me?
 
 Feel free to contact me using [this form](/contact).

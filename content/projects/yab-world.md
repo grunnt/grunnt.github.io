@@ -33,7 +33,7 @@ The code is open source and available on [GitHub](https://github.com/grunnt/yab-
 - Escape = return to menu
 
 ## Features:
-- An infinite editable block-worldm generated in real-time using 3D noise
+- An infinite editable block-world, generated in real-time using 3D noise
 - Different world types: rough hills (a la original Minecraft), an alien ice landscape, a water world or a flat world
 - Arcade style collision detection and player movement
 - Simple resource gathering and building

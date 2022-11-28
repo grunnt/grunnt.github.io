@@ -12,7 +12,7 @@ After receiving my first pull request for this toy (yay!) that added a simple pl
 
 # The goal
 
-Instead of filling all space where water was I rather would have the plant grow upwards, and stop growing after some time. Also, I'd like to have a "seed" that would turn into a plant whenever it was in contact with sand and water.
+Instead of filling all space where water was, I rather would have the plant grow upwards and stop growing after some time. Also, I'd like to have a "seed" that would turn into a plant whenever it was in contact with sand and water.
 
 # Data structure 
 

@@ -36,7 +36,7 @@
     <p>Falling Rust is a falling-sand toy I wrote. You can read more about it and download the application <a href="/projects/falling-rust">here</a>.</p>
 <p>After receiving my first pull request for this toy (yay!) that added a simple plant element (growing where water was), I figured that I could make these plants a little bit more interesting based on some ideas I had lying around. </p>
 <h1 id="the-goal">The goal</h1>
-<p>Instead of filling all space where water was I rather would have the plant grow upwards, and stop growing after some time. Also, I'd like to have a &quot;seed&quot; that would turn into a plant whenever it was in contact with sand and water.</p>
+<p>Instead of filling all space where water was, I rather would have the plant grow upwards and stop growing after some time. Also, I'd like to have a &quot;seed&quot; that would turn into a plant whenever it was in contact with sand and water.</p>
 <h1 id="data-structure">Data structure</h1>
 <p>Since Falling Rust is a cellular automata world, it consists of a grid of cells where each cell is governed by a somewhat simple set of rules. In addition each cell knows about the neighbouring cells. Each cell consists of a certain element (e.g. sand, rock, water, fire) that determines what it looks like and how it behaves. It also has a bit of state that allow for a little more complex behaviour:</p>
 <pre data-lang="rust" style="background-color:#2b303b;color:#c0c5ce;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#b48ead;">pub struct </span><span>Cell {</span><span>
