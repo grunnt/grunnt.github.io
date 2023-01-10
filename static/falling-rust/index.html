@@ -2,10 +2,13 @@
 
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=0">
     <style>
         body {
             background: #131313;
             margin: 0;
+            overflow: hidden;
+            touch-action: none;
         }
 
         canvas {
@@ -14,6 +17,10 @@
         }
     </style>
 </head>
+
+<body oncontextmenu="return false;">
+
+</body>
 <script type="module">
     import init from './wasm/falling-rust.js'
     init()
