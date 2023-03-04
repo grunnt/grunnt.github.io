@@ -1,9 +1,16 @@
 // Globals
 $baseline: 1.6em;
+
+$page-background-color: #EEE;
+$section-background-color: #FFF;
+$header-color: #373832;
 $text-color: #101010;
-$h-color: #373832;
-$light-text-color: rgb(73, 73, 70);
-$color-three: #668449;
+
+$details-color: #89c256;
+$details-text-color: #FFF;
+
+$link-color: #46aed5;
+$link-hover-color: #005675;
 
 // CSS reset
 * {
@@ -51,17 +58,17 @@ html {
 
 body {
     margin: 0;
-    background: #EEE;
+    background: $page-background-color;
 }
 
 a {
-    color: #46aed5;
+    color: $link-color;
     transition: all 0.2s ease-in-out;
     text-decoration: none;
 }
 
 a:hover {
-    color: #005675;
+    color: $link-hover-color;
     opacity: 1;
     text-decoration-color: inherit;
 }
@@ -87,7 +94,7 @@ h3 {
 
 h1 {
     font-size: 1.8em;
-    color: $h-color;
+    color: $header-color;
 }
 
 .center-column>h1 {
@@ -96,13 +103,13 @@ h1 {
 
 h2 {
     font-size: $baseline;
-    color: $h-color;
+    color: $header-color;
     line-height: 1.4em;
 }
 
 h3 {
     font-size: 1.2em;
-    color: $h-color;
+    color: $header-color;
 }
 
 header {
@@ -138,7 +145,7 @@ nav li {
 }
 
 hr {
-    color: #566a43;
+    color: $page-background-color;
 }
 
 .center-column,
@@ -154,7 +161,7 @@ header {
 section {
     padding: 20px;
     text-align: justify;
-    background: #FFF;
+    background: $section-background-color;
 }
 
 section h1,
@@ -198,7 +205,7 @@ p code {
 
 blockquote {
     margin-left: 1em;
-    border-left: 1px solid #888a7a;
+    border-left: 1px solid $page-background-color;
     padding-left: 1em;
     padding-right: 2em;
     font-style: italic;
@@ -239,8 +246,15 @@ form button {
 }
 
 .horizontal-line {
-    border-top: solid 1px #888a7a;
+    border-top: solid 1px $page-background-color;
     margin: 2em 0 0 0;
+}
+
+.action-button {
+    background: $details-color;
+    padding: 10px 20px;
+    border-radius: 15px;
+    color: $details-text-color;
 }
 
 
@@ -266,7 +280,7 @@ form button {
     max-width: 320px;
     margin: 0.5em;
     padding: 0.5em;
-    background: #FFF;
+    background: $section-background-color;
     text-align: center;
 }
 
@@ -305,7 +319,7 @@ form button {
 
 .photo-frame {
     display: inline-block;
-    background: #89c256;
+    background: $details-color;
     text-align: center;
 }
 
@@ -366,7 +380,7 @@ form button {
     margin-top: 0;
     padding-left: 0.75em;
     margin-left: 0.75em;
-    border-left: solid 1px #888a7a;
+    border-left: solid 1px $page-background-color;
     flex: 10;
 }
 

@@ -6,6 +6,11 @@ date = 2022-11-09
 blog_icon = "/java4k/java4k-logo.jpg"
 +++
 
+![Java4K Games Launcher Screenshot](/java4k/screenshot.png)
+
+<a href="https://github.com/grunnt/java4k/releases/latest" target="_blank" class="action-button">Windows installer</a>
+<a href="https://github.com/grunnt/java4k" target="_blank" class="action-button">Source code</a>
+
 Java4K was an online competition in which game programmers would try to create the best game possible in Java. I made three small games for this contest.
 
 # My submissions

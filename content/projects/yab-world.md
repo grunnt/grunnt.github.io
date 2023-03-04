@@ -12,11 +12,8 @@ Yet Another Block-World is a prototype infinite fully editable world for multipl
 
 ![Screenshot](/yab-world/screenshot.png)
 
-# How to run
-
-Download a pre-built version for Windows [here](https://github.com/grunnt/yab-world/releases). Download the ZIP file, unpack it somewhere and run *yab-world.exe*.
-
-The code is open source and available on [GitHub](https://github.com/grunnt/yab-world) (MIT License).
+<a href="https://github.com/grunnt/yab-world/releases" target="_blank" class="action-button">Download for Windows</a>
+<a href="https://github.com/grunnt/yab-world" target="_blank" class="action-button">Source code</a>
 
 # Controls
 

@@ -12,9 +12,8 @@ On this page I describe my own falling-sand toy, written using Rust, Bevy and eg
 
 ![Screenshot](/falling-rust/screenshot.png)
 
-## How to run
-
-You can download a Windows executable [here](https://github.com/grunnt/falling-rust/releases). Unfortunately I do not have Linux or Mac executables, but the code should compile on these platforms. 
+<a href="https://github.com/grunnt/falling-rust/releases" target="_blank" class="action-button">Download for Windows</a>
+<a href="https://github.com/grunnt/falling-rust" target="_blank" class="action-button">Source code</a>
 
 ## Features
 - 512 x 512 cells sandbox to play around with
