@@ -12,6 +12,7 @@ On this page I describe my own falling-sand toy, written using Rust, Bevy and eg
 
 ![Screenshot](/falling-rust/screenshot.png)
 
+<a href="/falling-rust/index.html" target="_blank" class="action-button">Run in browser</a>
 <a href="https://github.com/grunnt/falling-rust/releases" target="_blank" class="action-button">Download for Windows</a>
 <a href="https://github.com/grunnt/falling-rust" target="_blank" class="action-button">Source code</a>
 

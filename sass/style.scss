@@ -251,6 +251,7 @@ form button {
 }
 
 .action-button {
+    display: inline-block;
     background: $details-color;
     padding: 10px 20px;
     border-radius: 15px;
